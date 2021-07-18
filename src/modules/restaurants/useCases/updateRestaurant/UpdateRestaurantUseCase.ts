@@ -1,13 +1,13 @@
-import { inject, injectable } from 'tsyringe';
-
-import { AppError } from '../../../../shared/errors/AppError';
-import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
-import { Restaurant } from '../../infra/postgres/entities/Restaurant';
-import { IOpeningHoursRepository } from '../../repositories/IOpeningHoursRepository';
+import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+import { IOpeningHoursRepository } from '@modules/restaurants/repositories/IOpeningHoursRepository';
 import {
   IRestaurantsRepository,
   IRestaurantsResponse,
-} from '../../repositories/IRestaurantRepository';
+} from '@modules/restaurants/repositories/IRestaurantRepository';
+import { inject, injectable } from 'tsyringe';
+import { validate, version } from 'uuid';
+
+import { AppError } from '@shared/errors/AppError';
 
 interface IOpeningHours {
   weekday: string;
@@ -16,6 +16,7 @@ interface IOpeningHours {
 }
 
 interface IRequest {
+  id: string;
   name: string;
   address: string;
   number: string;
@@ -28,7 +29,7 @@ interface IRequest {
 }
 
 @injectable()
-class CreateRestaurantUseCase {
+class UpdateRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
     private restaurantRepository: IRestaurantsRepository,
@@ -38,6 +39,7 @@ class CreateRestaurantUseCase {
   ) {}
 
   async execute({
+    id,
     name,
     address,
     number,
@@ -48,6 +50,14 @@ class CreateRestaurantUseCase {
     postal_code,
     opening_hours = [],
   }: IRequest): Promise<IRestaurantsResponse> {
+    if (!id) {
+      throw new AppError('Id is required');
+    }
+
+    if (!validate(id) || version(id) !== 4) {
+      throw new AppError('Invalid id');
+    }
+
     if (!name) {
       throw new AppError('Name is required');
     }
@@ -72,8 +82,14 @@ class CreateRestaurantUseCase {
       }
     });
 
-    const restaurant = {
-      ...new Restaurant(),
+    const restaurant = await this.restaurantRepository.findOne({ id });
+
+    if (!restaurant) {
+      throw new AppError('Restaurant not found');
+    }
+
+    const updatedRestaurant = await this.restaurantRepository.updateById({
+      id,
       name,
       address,
       number,
@@ -82,11 +98,9 @@ class CreateRestaurantUseCase {
       state,
       country,
       postal_code,
-    };
+    });
 
-    const restaurantCreated = await this.restaurantRepository.create(
-      restaurant,
-    );
+    await this.openingHoursRepository.delete({ restaurantId: id });
 
     const openingHoursWeekdays = weekdays.map(weekday => {
       const foundOpeningHour = opening_hours.find(
@@ -106,7 +120,7 @@ class CreateRestaurantUseCase {
         weekday,
         start_time,
         finish_time,
-        restaurant_id: restaurantCreated.id,
+        restaurant_id: id,
       };
     });
 
@@ -114,13 +128,13 @@ class CreateRestaurantUseCase {
       openingHoursWeekdays,
     );
 
-    const restaurantOpeningHoursCreated = {
-      ...restaurantCreated,
+    const restaurantOpeningHoursUpdated = {
+      ...updatedRestaurant,
       opening_hours: openingHoursCreated,
     };
 
-    return restaurantOpeningHoursCreated;
+    return restaurantOpeningHoursUpdated;
   }
 }
 
-export { CreateRestaurantUseCase };
+export { UpdateRestaurantUseCase };
