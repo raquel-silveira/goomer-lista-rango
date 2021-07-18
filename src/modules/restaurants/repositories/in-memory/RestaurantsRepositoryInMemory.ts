@@ -63,7 +63,14 @@ class RestaurantsRepositoryInMemory implements IRestaurantsRepository {
     return restaurantOpeningHours;
   }
   async findAll(): Promise<IRestaurantsResponse[]> {
-    throw new Error('Method not implemented.');
+    const restaurants = this.restaurants.map(restaurant => ({
+      ...restaurant,
+      opening_hours: this.openingHours.filter(
+        openingHour => openingHour.restaurant_id === restaurant.id,
+      ),
+    }));
+
+    return restaurants;
   }
 }
 
