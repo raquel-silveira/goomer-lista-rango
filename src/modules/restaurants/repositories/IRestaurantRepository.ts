@@ -44,6 +44,8 @@ interface IRestaurantsRepository {
     country,
     postal_code,
   }: IUpdateRestaurantDTO): Promise<Restaurant>;
+
+  delete({ id }: { id: string }): Promise<void>;
 }
 
 export { IRestaurantsRepository, IRestaurantsResponse };
