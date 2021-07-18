@@ -22,7 +22,6 @@ class RestaurantsRepositoryInMemory implements IRestaurantsRepository {
   restaurants: Restaurant[] = [];
 
   constructor(private openingHours: OpeningHours[]) {}
-
   async create({
     id,
     name,
@@ -126,6 +125,12 @@ class RestaurantsRepositoryInMemory implements IRestaurantsRepository {
     const updatedRestaurant = { ...this.restaurants[restaurantIndex] };
 
     return updatedRestaurant;
+  }
+
+  async delete({ id }: { id: string }): Promise<void> {
+    this.restaurants = this.restaurants.filter(
+      restaurant => restaurant.id !== id,
+    );
   }
 }
 
