@@ -8,8 +8,8 @@ import { IRestaurantsRepository } from '../../repositories/IRestaurantRepository
 
 interface IOpeningHours {
   weekday: string;
-  start_time: string;
-  finish_time: string;
+  start_time?: string;
+  finish_time?: string;
 }
 
 interface IRequest {
