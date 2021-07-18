@@ -1,4 +1,5 @@
 import { ICreateRestaurantDTO } from '../dtos/ICreateRestaurantDTO';
+import { IUpdateRestaurantDTO } from '../dtos/IUpdateRestaurantDTO';
 import { OpeningHours } from '../infra/postgres/entities/OpeningHours';
 import { Restaurant } from '../infra/postgres/entities/Restaurant';
 
@@ -31,6 +32,18 @@ interface IRestaurantsRepository {
   findOne({ id }: { id: string }): Promise<IRestaurantsResponse>;
 
   findAll(): Promise<IRestaurantsResponse[]>;
+
+  updateById({
+    id,
+    name,
+    address,
+    number,
+    neighborhood,
+    city,
+    state,
+    country,
+    postal_code,
+  }: IUpdateRestaurantDTO): Promise<Restaurant>;
 }
 
 export { IRestaurantsRepository, IRestaurantsResponse };

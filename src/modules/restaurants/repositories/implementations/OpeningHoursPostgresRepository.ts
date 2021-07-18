@@ -29,6 +29,14 @@ class OpeningHoursPostgresRepository implements IOpeningHoursRepository {
 
     return rows;
   }
+
+  async delete({ restaurantId }: { restaurantId: string }): Promise<void> {
+    const client = await createConnection();
+
+    await client.query(`DELETE FROM OPENING_HOURS WHERE RESTAURANT_ID = $1`, [
+      restaurantId,
+    ]);
+  }
 }
 
 export { OpeningHoursPostgresRepository };

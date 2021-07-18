@@ -12,6 +12,12 @@ class OpeningHoursRepositoryInMemory implements IOpeningHoursRepository {
 
     return openingHours;
   }
+
+  async delete({ restaurantId }: { restaurantId: string }): Promise<void> {
+    this.openingHoursStorage = this.openingHoursStorage.filter(
+      openingHour => openingHour.restaurant_id !== restaurantId,
+    );
+  }
 }
 
 export { OpeningHoursRepositoryInMemory };
