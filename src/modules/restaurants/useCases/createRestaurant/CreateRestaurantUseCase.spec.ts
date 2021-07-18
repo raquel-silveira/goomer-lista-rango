@@ -1,10 +1,7 @@
 import 'reflect-metadata';
-
-import { OpeningHoursRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/OpeningHoursRespositoryInMemory';
-import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/RestaurantsRepositoryInMemory';
-
-import { AppError } from '@shared/errors/AppError';
-
+import { AppError } from '../../../../shared/errors/AppError';
+import { OpeningHoursRepositoryInMemory } from '../../repositories/in-memory/OpeningHoursRespositoryInMemory';
+import { RestaurantsRepositoryInMemory } from '../../repositories/in-memory/RestaurantsRepositoryInMemory';
 import { CreateRestaurantUseCase } from './CreateRestaurantUseCase';
 
 let createRestaurantUseCase: CreateRestaurantUseCase;
@@ -13,8 +10,10 @@ let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
 
 describe('Create Restaurant', () => {
   beforeEach(() => {
-    restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory();
     openingHoursRepositoryInMemory = new OpeningHoursRepositoryInMemory();
+    restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory(
+      openingHoursRepositoryInMemory.openingHoursStorage,
+    );
 
     createRestaurantUseCase = new CreateRestaurantUseCase(
       restaurantsRepositoryInMemory,
@@ -52,6 +51,21 @@ describe('Create Restaurant', () => {
     });
 
     expect(restaurant).toHaveProperty('id');
+  });
+
+  it('should be able to create a new restaurant with opening hours', async () => {
+    const restaurant = await createRestaurantUseCase.execute({
+      name: 'Restaurante Goomer',
+      address: 'Rua São João',
+      number: '500',
+      neighborhood: 'Jardim Tóquio',
+      city: 'Sorocaba',
+      state: 'SP',
+      country: 'Brasil',
+      postal_code: '18279-050',
+    });
+
+    expect(restaurant.opening_hours.length).toBe(7);
   });
 
   it('should not be able to create a restaurant without the field name', async () => {

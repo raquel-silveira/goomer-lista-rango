@@ -1,7 +1,7 @@
-import { ICreateOpeningHoursDTO } from '@modules/restaurants/dtos/ICreateOpeningHoursDTO';
 import format from 'pg-format';
 
 import { createConnection } from '../../../../database/connection';
+import { ICreateOpeningHoursDTO } from '../../dtos/ICreateOpeningHoursDTO';
 import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
 import { IOpeningHoursRepository } from '../IOpeningHoursRepository';
 
