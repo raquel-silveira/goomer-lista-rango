@@ -122,6 +122,12 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
 
     return rows[0];
   }
+
+  async delete({ id }: { id: string }): Promise<void> {
+    const client = await createConnection();
+
+    await client.query(`DELETE FROM RESTAURANTS WHERE ID = $1`, [id]);
+  }
 }
 
 export { RestaurantsPostgresRepository };
