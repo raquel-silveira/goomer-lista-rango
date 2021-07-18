@@ -1,30 +1,14 @@
-import { IRestaurantsRepository } from '@modules/restaurants/repositories/IRestaurantRepository';
+import {
+  IRestaurantsRepository,
+  IRestaurantsResponse,
+} from '@modules/restaurants/repositories/IRestaurantRepository';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
 import { AppError } from '@shared/errors/AppError';
 
-interface IOpeningHours {
-  weekday: string;
-  start_time: string;
-  finish_time: string;
-}
-
 interface IRequest {
   id: string;
-}
-
-interface IResponse {
-  id: string;
-  name: string;
-  address: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  country: string;
-  postal_code: string;
-  opening_hours: IOpeningHours[];
 }
 
 @injectable()
@@ -34,7 +18,7 @@ class ListOneRestaurantUseCase {
     private restaurantRepository: IRestaurantsRepository,
   ) {}
 
-  async execute({ id }: IRequest): Promise<IResponse> {
+  async execute({ id }: IRequest): Promise<IRestaurantsResponse> {
     if (!id) {
       throw new AppError('Id is required');
     }

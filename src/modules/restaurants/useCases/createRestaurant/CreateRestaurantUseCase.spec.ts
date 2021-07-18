@@ -71,6 +71,7 @@ describe('Create Restaurant', () => {
   it('should not be able to create a restaurant without the field name', async () => {
     await expect(
       createRestaurantUseCase.execute({
+        name: '',
         address: 'Rua São João',
         number: '500',
         neighborhood: 'Jardim Tóquio',

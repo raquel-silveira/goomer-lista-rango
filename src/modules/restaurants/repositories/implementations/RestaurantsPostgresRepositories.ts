@@ -1,4 +1,5 @@
 import { ICreateRestaurantDTO } from '@modules/restaurants/dtos/ICreateRestaurantDTO';
+import { IUpdateRestaurantDTO } from '@modules/restaurants/dtos/IUpdateRestaurantDTO';
 import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
 import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
 import { createConnection } from 'database/connection';
@@ -87,6 +88,39 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
     );
 
     return rows;
+  }
+
+  async updateById({
+    id,
+    name,
+    address,
+    number,
+    neighborhood,
+    city,
+    state,
+    country,
+    postal_code,
+  }: IUpdateRestaurantDTO): Promise<Restaurant> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `UPDATE RESTAURANTS SET
+      NAME = $1, ADDRESS = $2, NUMBER = $3, NEIGHBORHOOD = $4, CITY = $5, STATE = $6, COUNTRY = $7, POSTAL_CODE = $8
+      WHERE ID = $9 RETURNING *`,
+      [
+        name,
+        address,
+        number,
+        neighborhood,
+        city,
+        state,
+        country,
+        postal_code,
+        id,
+      ],
+    );
+
+    return rows[0];
   }
 }
 
