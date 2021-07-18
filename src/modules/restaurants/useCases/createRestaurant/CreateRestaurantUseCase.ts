@@ -21,7 +21,7 @@ interface IRequest {
   state: string;
   country: string;
   postal_code: string;
-  opening_hours: IOpeningHours[];
+  opening_hours?: IOpeningHours[];
 }
 
 interface IResponse {

@@ -54,6 +54,21 @@ describe('Create Restaurant', () => {
     expect(restaurant).toHaveProperty('id');
   });
 
+  it('should be able to create a new restaurant with opening hours', async () => {
+    const restaurant = await createRestaurantUseCase.execute({
+      name: 'Restaurante Goomer',
+      address: 'Rua São João',
+      number: '500',
+      neighborhood: 'Jardim Tóquio',
+      city: 'Sorocaba',
+      state: 'SP',
+      country: 'Brasil',
+      postal_code: '18279-050',
+    });
+
+    expect(restaurant.opening_hours.length).toBe(7);
+  });
+
   it('should not be able to create a restaurant without the field name', async () => {
     await expect(
       createRestaurantUseCase.execute({
