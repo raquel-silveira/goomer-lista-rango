@@ -1,7 +1,8 @@
-import { createConnection } from '../../../../database/connection';
-import { ICreateRestaurantDTO } from '../../dtos/ICreateRestaurantDTO';
-import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
-import { Restaurant } from '../../infra/postgres/entities/Restaurant';
+import { ICreateRestaurantDTO } from '@modules/restaurants/dtos/ICreateRestaurantDTO';
+import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
+import { createConnection } from 'database/connection';
+
 import { IRestaurantsRepository } from '../IRestaurantRepository';
 
 interface IResponse {
@@ -70,7 +71,22 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
     return rows[0];
   }
   async findAll(): Promise<IResponse[]> {
-    throw new Error('Method not implemented.');
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `SElECT R.*,
+      jsonb_agg(
+        DISTINCT
+        jsonb_build_object(
+          'weekday', OH.WEEKDAY,
+          'start_time', OH.START_TIME,
+          'finish_time', OH.FINISH_TIME
+        )
+      ) as opening_hours
+      FROM RESTAURANTS R INNER JOIN OPENING_HOURS OH ON R.ID = OH.RESTAURANT_ID GROUP BY R.ID`,
+    );
+
+    return rows;
   }
 }
 
