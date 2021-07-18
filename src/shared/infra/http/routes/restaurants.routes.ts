@@ -1,3 +1,4 @@
+import { ListAllRestaurantsController } from '@modules/restaurants/useCases/listAllRestaurants/ListAllRestaurantsController';
 import { Router } from 'express';
 
 import { CreateRestaurantController } from '../../../../modules/restaurants/useCases/createRestaurant/CreateRestaurantController';
@@ -5,12 +6,11 @@ import { ListOneRestaurantController } from '../../../../modules/restaurants/use
 
 const restaurantsRoutes = Router();
 
+const listAllRestaurantController = new ListAllRestaurantsController();
 const listOneRestaurantController = new ListOneRestaurantController();
 const createRestaurantController = new CreateRestaurantController();
 
-restaurantsRoutes.get('/', (request, response) => {
-  response.status(201).json('oi');
-});
+restaurantsRoutes.get('/', listAllRestaurantController.handle);
 
 restaurantsRoutes.get('/:id', listOneRestaurantController.handle);
 
