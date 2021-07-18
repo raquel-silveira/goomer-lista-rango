@@ -11,7 +11,7 @@ let listOneRestaurantUseCase: ListOneRestaurantUseCase;
 let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
 
-describe('List Restaurant', () => {
+describe('List One Restaurant', () => {
   beforeEach(() => {
     openingHoursRepositoryInMemory = new OpeningHoursRepositoryInMemory();
     restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory(
