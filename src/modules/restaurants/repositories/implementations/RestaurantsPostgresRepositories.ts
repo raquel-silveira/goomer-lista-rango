@@ -4,7 +4,7 @@ import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/Openi
 import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
 import { createConnection } from 'database/connection';
 
-import { IRestaurantsRepository } from '../IRestaurantRepository';
+import { IRestaurantsRepository } from '../IRestaurantsRepository';
 
 interface IResponse {
   id: string;
