@@ -9,6 +9,7 @@ import { IRestaurantsRepository } from '../IRestaurantRepository';
 interface IResponse {
   id: string;
   name: string;
+  photo: string;
   address: string;
   number: string;
   neighborhood: string;
@@ -127,6 +128,23 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
     const client = await createConnection();
 
     await client.query(`DELETE FROM RESTAURANTS WHERE ID = $1`, [id]);
+  }
+
+  async updatePhotoById({
+    id,
+    photoFilename,
+  }: {
+    id: string;
+    photoFilename: string;
+  }): Promise<Restaurant> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `UPDATE RESTAURANTS SET PHOTO = $1 WHERE ID = $2 RETURNING *`,
+      [photoFilename, id],
+    );
+
+    return rows[0];
   }
 }
 

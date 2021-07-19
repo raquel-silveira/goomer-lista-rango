@@ -6,6 +6,7 @@ import { Restaurant } from '../infra/postgres/entities/Restaurant';
 interface IRestaurantsResponse {
   id: string;
   name: string;
+  photo: string;
   address: string;
   number: string;
   neighborhood: string;
@@ -46,6 +47,14 @@ interface IRestaurantsRepository {
   }: IUpdateRestaurantDTO): Promise<Restaurant>;
 
   delete({ id }: { id: string }): Promise<void>;
+
+  updatePhotoById({
+    id,
+    photoFilename,
+  }: {
+    id: string;
+    photoFilename: string;
+  }): Promise<Restaurant>;
 }
 
 export { IRestaurantsRepository, IRestaurantsResponse };
