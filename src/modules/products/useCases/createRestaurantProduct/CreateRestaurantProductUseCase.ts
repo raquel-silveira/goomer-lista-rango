@@ -7,6 +7,7 @@ import {
   IProductsResponse,
 } from '@modules/products/repositories/IProductsRepository';
 import { IPromotionsRepository } from '@modules/products/repositories/IPromotionsRepository';
+import { IRestaurantsRepository } from '@modules/restaurants/repositories/IRestaurantsRepository';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
@@ -30,7 +31,7 @@ interface IRequest {
 }
 
 @injectable()
-class CreateProductUseCase {
+class CreateRestaurantProductUseCase {
   constructor(
     @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
@@ -40,6 +41,9 @@ class CreateProductUseCase {
 
     @inject('CategoriesRepository')
     private categoriesRepository: ICategoriesRepository,
+
+    @inject('RestaurantsRepository')
+    private restaurantsRepository: IRestaurantsRepository,
   ) {}
   s;
 
@@ -60,6 +64,14 @@ class CreateProductUseCase {
 
     if (!name) {
       throw new AppError('Name is required');
+    }
+
+    const restaurantFound = await this.restaurantsRepository.findOne({
+      id: restaurantId,
+    });
+
+    if (!restaurantFound) {
+      throw new AppError('Restaurant not found');
     }
 
     let categoryInfo: Category;
@@ -115,4 +127,4 @@ class CreateProductUseCase {
   }
 }
 
-export { CreateProductUseCase };
+export { CreateRestaurantProductUseCase };

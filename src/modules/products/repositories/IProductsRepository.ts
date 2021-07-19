@@ -8,8 +8,7 @@ interface IProductsResponse {
   name: string;
   photo: string;
   price: number;
-  category_id: string;
-  restaurant_id: string;
+  category: string;
   promotion: Promotion;
 }
 
@@ -22,7 +21,7 @@ interface IProductsRepository {
     restaurantId,
   }: ICreateProductDTO): Promise<Product>;
 
-  findAll({
+  findByRestaurantId({
     restaurantId,
   }: {
     restaurantId: string;

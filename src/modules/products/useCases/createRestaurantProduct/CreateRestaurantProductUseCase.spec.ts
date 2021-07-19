@@ -8,16 +8,16 @@ import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories
 
 import { AppError } from '@shared/errors/AppError';
 
-import { CreateProductUseCase } from './CreateProductUseCase';
+import { CreateRestaurantProductUseCase } from './CreateRestaurantProductUseCase';
 
-let createProductUseCase: CreateProductUseCase;
+let createRestaurantProductUseCase: CreateRestaurantProductUseCase;
 let productsRepositoryInMemory: ProductsRepositoryInMemory;
 let promotionsRepositoryInMemory: PromotionsRepositoryInMemory;
 let categoriesRepositoryInMemory: CategoriesRepositoryInMemory;
 let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
 
-describe('Create Restaurant', () => {
+describe('Create Restaurant Product', () => {
   beforeEach(() => {
     productsRepositoryInMemory = new ProductsRepositoryInMemory();
     promotionsRepositoryInMemory = new PromotionsRepositoryInMemory();
@@ -27,10 +27,11 @@ describe('Create Restaurant', () => {
       openingHoursRepositoryInMemory.openingHoursStorage,
     );
 
-    createProductUseCase = new CreateProductUseCase(
+    createRestaurantProductUseCase = new CreateRestaurantProductUseCase(
       productsRepositoryInMemory,
       promotionsRepositoryInMemory,
       categoriesRepositoryInMemory,
+      restaurantsRepositoryInMemory,
     );
   });
 
@@ -47,7 +48,7 @@ describe('Create Restaurant', () => {
       postal_code: '18279-050',
     });
 
-    const product = await createProductUseCase.execute({
+    const product = await createRestaurantProductUseCase.execute({
       name: 'Bolacha',
       price: 3.5,
       category: 'doce',
@@ -79,7 +80,7 @@ describe('Create Restaurant', () => {
     });
 
     await expect(
-      createProductUseCase.execute({
+      createRestaurantProductUseCase.execute({
         name: '',
         price: 3.5,
         category: 'doce',
@@ -98,7 +99,7 @@ describe('Create Restaurant', () => {
 
   it('should not be able to create a product without restaurant id', async () => {
     await expect(
-      createProductUseCase.execute({
+      createRestaurantProductUseCase.execute({
         name: 'Bolacha',
         price: 3.5,
         category: 'doce',
@@ -117,7 +118,7 @@ describe('Create Restaurant', () => {
 
   it('should not be able to create a product with invalid restaurant id', async () => {
     await expect(
-      createProductUseCase.execute({
+      createRestaurantProductUseCase.execute({
         name: 'Bolacha',
         price: 3.5,
         category: 'doce',
@@ -132,5 +133,24 @@ describe('Create Restaurant', () => {
         restaurantId: 'wrong-id',
       }),
     ).rejects.toEqual(new AppError('Invalid restaurant id'));
+  });
+
+  it('should not be able to create a product if restaurant does not exists', async () => {
+    await expect(
+      createRestaurantProductUseCase.execute({
+        name: 'Bolacha',
+        price: 3.5,
+        category: 'doce',
+        promotion: {
+          description: 'metade do preço',
+          price_promotion: 1.25,
+          start_date: '2021-05-21',
+          finish_date: '2021-05-10',
+          start_time: '13:00',
+          finish_time: '13:00',
+        },
+        restaurantId: 'a29fc323-5365-4baf-8461-fe2cae460541',
+      }),
+    ).rejects.toEqual(new AppError('Restaurant not found'));
   });
 });

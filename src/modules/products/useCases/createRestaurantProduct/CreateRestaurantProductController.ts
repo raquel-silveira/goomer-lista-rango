@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import { CreateProductUseCase } from './CreateProductUseCase';
+import { CreateRestaurantProductUseCase } from './CreateRestaurantProductUseCase';
 
-class CreateProductController {
+class CreateRestaurantProductController {
   async handle(request: Request, response: Response): Promise<Response> {
     const { name, price, category, promotion } = request.body;
     const { restaurantId } = request.params;
 
-    const createProductUseCase = container.resolve(CreateProductUseCase);
+    const createRestaurantProductUseCase = container.resolve(
+      CreateRestaurantProductUseCase,
+    );
 
-    const product = await createProductUseCase.execute({
+    const product = await createRestaurantProductUseCase.execute({
       restaurantId,
       name,
       price,
@@ -22,4 +24,4 @@ class CreateProductController {
   }
 }
 
-export { CreateProductController };
+export { CreateRestaurantProductController };
