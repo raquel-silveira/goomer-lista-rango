@@ -1,2 +1,7 @@
 node_modules
 .vscode
+coverage
+.env
+
+tmp/uploads/*
+!tmp/uploads/.gitkeep
