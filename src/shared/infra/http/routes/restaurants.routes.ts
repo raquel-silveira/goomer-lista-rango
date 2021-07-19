@@ -12,14 +12,14 @@ const restaurantsRoutes = Router();
 
 const uploadPhoto = multer(upload.multer);
 
-const listAllRestaurantController = new ListAllRestaurantsController();
+const listAllRestaurantsController = new ListAllRestaurantsController();
 const listOneRestaurantController = new ListOneRestaurantController();
 const createRestaurantController = new CreateRestaurantController();
 const updateRestaurantController = new UpdateRestaurantController();
 const deleteRestaurantController = new DeleteRestaurantController();
 const uploadPhotoRestaurantController = new UploadPhotoRestaurantController();
 
-restaurantsRoutes.get('/', listAllRestaurantController.handle);
+restaurantsRoutes.get('/', listAllRestaurantsController.handle);
 
 restaurantsRoutes.get('/:id', listOneRestaurantController.handle);
 
