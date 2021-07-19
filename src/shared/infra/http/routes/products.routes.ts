@@ -1,10 +1,18 @@
-import { CreateProductController } from '@modules/products/useCases/createProduct/CreateProductController';
+import { CreateRestaurantProductController } from '@modules/products/useCases/createRestaurantProduct/CreateRestaurantProductController';
+import { ListAllRestaurantProductsController } from '@modules/products/useCases/listAllRestaurantProducts/listAllRestaurantProductsController';
 import { Router } from 'express';
 
 const productsRoutes = Router();
 
-const createProductController = new CreateProductController();
+const listAllRestaurantProductsController =
+  new ListAllRestaurantProductsController();
+const createRestaurantProductController =
+  new CreateRestaurantProductController();
 
-productsRoutes.post('/:restaurantId', createProductController.handle);
+productsRoutes.get(
+  '/:restaurantId',
+  listAllRestaurantProductsController.handle,
+);
+productsRoutes.post('/:restaurantId', createRestaurantProductController.handle);
 
 export { productsRoutes };
