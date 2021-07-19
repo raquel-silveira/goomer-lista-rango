@@ -3,7 +3,7 @@ import { IOpeningHoursRepository } from '@modules/restaurants/repositories/IOpen
 import {
   IRestaurantsRepository,
   IRestaurantsResponse,
-} from '@modules/restaurants/repositories/IRestaurantRepository';
+} from '@modules/restaurants/repositories/IRestaurantsRepository';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 

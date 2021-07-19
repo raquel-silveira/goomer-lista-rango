@@ -3,7 +3,7 @@ import { IUpdateRestaurantDTO } from '@modules/restaurants/dtos/IUpdateRestauran
 import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
 import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
 
-import { IRestaurantsRepository } from '../IRestaurantRepository';
+import { IRestaurantsRepository } from '../IRestaurantsRepository';
 
 interface IResponse {
   id: string;

@@ -1,7 +1,7 @@
 import {
   IRestaurantsRepository,
   IRestaurantsResponse,
-} from '@modules/restaurants/repositories/IRestaurantRepository';
+} from '@modules/restaurants/repositories/IRestaurantsRepository';
 import { inject, injectable } from 'tsyringe';
 
 @injectable()

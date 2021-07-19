@@ -1,4 +1,4 @@
-import { IRestaurantsRepository } from '@modules/restaurants/repositories/IRestaurantRepository';
+import { IRestaurantsRepository } from '@modules/restaurants/repositories/IRestaurantsRepository';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
