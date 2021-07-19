@@ -1,12 +1,18 @@
 import { ICreateProductDTO } from '@modules/products/dtos/ICreateProductDTO';
 import { IUpdateProductDTO } from '@modules/products/dtos/IUpdateProductDTO';
+import { Category } from '@modules/products/infra/postgres/entities/Category';
 import { Product } from '@modules/products/infra/postgres/entities/Product';
+import { Promotion } from '@modules/products/infra/postgres/entities/Promotion';
 
 import { IProductsRepository, IProductsResponse } from '../IProductsRepository';
 
 class ProductsRepositoryInMemory implements IProductsRepository {
   products: Product[] = [];
 
+  constructor(
+    private promotions: Promotion[] = [],
+    private categories: Category[] = [],
+  ) {}
   async create({
     id,
     name,
@@ -21,19 +27,41 @@ class ProductsRepositoryInMemory implements IProductsRepository {
       name,
       price,
       category_id,
-      restaurantId,
+      restaurant_id: restaurantId,
     });
 
     this.products.push(product);
 
     return product;
   }
-  async findAll({
+  async findByRestaurantId({
     restaurantId,
   }: {
     restaurantId: string;
   }): Promise<IProductsResponse[]> {
-    throw new Error('Method not implemented.');
+    const productsFounded = this.products.filter(
+      product => product.restaurant_id === restaurantId,
+    );
+
+    if (!productsFounded) {
+      return null;
+    }
+
+    const productPromotion = productsFounded.map(product => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      photo: product.photo,
+      category:
+        this.categories.find(category => category.id === product.category_id)
+          ?.name || null,
+      promotion:
+        this.promotions.find(
+          promotion => promotion.product_id === product.id,
+        ) || null,
+    }));
+
+    return productPromotion;
   }
   async updateById({ id, name, price }: IUpdateProductDTO): Promise<Product> {
     throw new Error('Method not implemented.');
