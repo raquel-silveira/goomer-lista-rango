@@ -1,8 +1,8 @@
+import { ICreateOpeningHoursDTO } from '@modules/restaurants/dtos/ICreateOpeningHoursDTO';
+import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+import { createConnection } from 'database/connection';
 import format from 'pg-format';
 
-import { createConnection } from '../../../../database/connection';
-import { ICreateOpeningHoursDTO } from '../../dtos/ICreateOpeningHoursDTO';
-import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
 import { IOpeningHoursRepository } from '../IOpeningHoursRepository';
 
 class OpeningHoursPostgresRepository implements IOpeningHoursRepository {
@@ -30,12 +30,31 @@ class OpeningHoursPostgresRepository implements IOpeningHoursRepository {
     return rows;
   }
 
-  async delete({ restaurantId }: { restaurantId: string }): Promise<void> {
+  async deleteByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<void> {
     const client = await createConnection();
 
     await client.query(`DELETE FROM OPENING_HOURS WHERE RESTAURANT_ID = $1`, [
       restaurantId,
     ]);
+  }
+
+  async findByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<OpeningHours[]> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `SElECT WEEKDAY, START_TIME, FINISH_TIME FROM OPENING_HOURS WHERE RESTAURANT_ID = $1`,
+      [restaurantId],
+    );
+
+    return rows;
   }
 }
 

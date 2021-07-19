@@ -100,7 +100,9 @@ class UpdateRestaurantUseCase {
       postal_code,
     });
 
-    await this.openingHoursRepository.delete({ restaurantId: id });
+    await this.openingHoursRepository.deleteByRestaurantId({
+      restaurantId: id,
+    });
 
     const openingHoursWeekdays = weekdays.map(weekday => {
       const foundOpeningHour = opening_hours.find(
