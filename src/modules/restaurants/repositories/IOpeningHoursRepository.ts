@@ -4,7 +4,17 @@ import { OpeningHours } from '../infra/postgres/entities/OpeningHours';
 interface IOpeningHoursRepository {
   create(openingHours: ICreateOpeningHoursDTO[]): Promise<OpeningHours[]>;
 
-  delete({ restaurantId }: { restaurantId: string }): Promise<void>;
+  deleteByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<void>;
+
+  findByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<OpeningHours[]>;
 }
 
 export { IOpeningHoursRepository };

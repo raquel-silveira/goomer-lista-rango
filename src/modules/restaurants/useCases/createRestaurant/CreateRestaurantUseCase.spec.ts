@@ -1,7 +1,9 @@
+import { OpeningHoursRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/OpeningHoursRespositoryInMemory';
+import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/RestaurantsRepositoryInMemory';
+
+import { AppError } from '@shared/errors/AppError';
+
 import 'reflect-metadata';
-import { AppError } from '../../../../shared/errors/AppError';
-import { OpeningHoursRepositoryInMemory } from '../../repositories/in-memory/OpeningHoursRespositoryInMemory';
-import { RestaurantsRepositoryInMemory } from '../../repositories/in-memory/RestaurantsRepositoryInMemory';
 import { CreateRestaurantUseCase } from './CreateRestaurantUseCase';
 
 let createRestaurantUseCase: CreateRestaurantUseCase;

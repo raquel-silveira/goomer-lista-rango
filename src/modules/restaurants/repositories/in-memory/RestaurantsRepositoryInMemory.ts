@@ -1,13 +1,14 @@
+import { ICreateRestaurantDTO } from '@modules/restaurants/dtos/ICreateRestaurantDTO';
 import { IUpdateRestaurantDTO } from '@modules/restaurants/dtos/IUpdateRestaurantDTO';
 import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
 
-import { ICreateRestaurantDTO } from '../../dtos/ICreateRestaurantDTO';
-import { Restaurant } from '../../infra/postgres/entities/Restaurant';
 import { IRestaurantsRepository } from '../IRestaurantRepository';
 
 interface IResponse {
   id: string;
   name: string;
+  photo: string;
   address: string;
   number: string;
   neighborhood: string;
@@ -131,6 +132,32 @@ class RestaurantsRepositoryInMemory implements IRestaurantsRepository {
     this.restaurants = this.restaurants.filter(
       restaurant => restaurant.id !== id,
     );
+  }
+
+  async updatePhotoById({
+    id,
+    photoFilename,
+  }: {
+    id: string;
+    photoFilename: string;
+  }): Promise<Restaurant> {
+    const restaurantFound = this.restaurants.find(
+      restaurant => restaurant.id === id,
+    );
+
+    if (!restaurantFound) {
+      return null;
+    }
+
+    const restaurantIndex = this.restaurants.findIndex(
+      restaurant => restaurant.id === id,
+    );
+
+    this.restaurants[restaurantIndex].photo = photoFilename;
+
+    const updatedPhotoRestaurant = { ...this.restaurants[restaurantIndex] };
+
+    return updatedPhotoRestaurant;
   }
 }
 

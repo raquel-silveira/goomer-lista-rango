@@ -1,5 +1,6 @@
-import { ICreateOpeningHoursDTO } from '../../dtos/ICreateOpeningHoursDTO';
-import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
+import { ICreateOpeningHoursDTO } from '@modules/restaurants/dtos/ICreateOpeningHoursDTO';
+import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+
 import { IOpeningHoursRepository } from '../IOpeningHoursRepository';
 
 class OpeningHoursRepositoryInMemory implements IOpeningHoursRepository {
@@ -13,10 +14,26 @@ class OpeningHoursRepositoryInMemory implements IOpeningHoursRepository {
     return openingHours;
   }
 
-  async delete({ restaurantId }: { restaurantId: string }): Promise<void> {
+  async deleteByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<void> {
     this.openingHoursStorage = this.openingHoursStorage.filter(
       openingHour => openingHour.restaurant_id !== restaurantId,
     );
+  }
+
+  async findByRestaurantId({
+    restaurantId,
+  }: {
+    restaurantId: string;
+  }): Promise<OpeningHours[]> {
+    const openingHours = this.openingHoursStorage.filter(
+      openingHour => openingHour.restaurant_id === restaurantId,
+    );
+
+    return openingHours;
   }
 }
 

@@ -1,13 +1,13 @@
-import { inject, injectable } from 'tsyringe';
-
-import { AppError } from '../../../../shared/errors/AppError';
-import { OpeningHours } from '../../infra/postgres/entities/OpeningHours';
-import { Restaurant } from '../../infra/postgres/entities/Restaurant';
-import { IOpeningHoursRepository } from '../../repositories/IOpeningHoursRepository';
+import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
+import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
+import { IOpeningHoursRepository } from '@modules/restaurants/repositories/IOpeningHoursRepository';
 import {
   IRestaurantsRepository,
   IRestaurantsResponse,
-} from '../../repositories/IRestaurantRepository';
+} from '@modules/restaurants/repositories/IRestaurantRepository';
+import { inject, injectable } from 'tsyringe';
+
+import { AppError } from '@shared/errors/AppError';
 
 interface IOpeningHours {
   weekday: string;
