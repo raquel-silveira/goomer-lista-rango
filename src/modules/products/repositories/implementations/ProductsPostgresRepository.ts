@@ -86,7 +86,9 @@ class ProductsPostgresRepository implements IProductsRepository {
     return rows[0];
   }
   async delete({ id }: { id: string }): Promise<void> {
-    throw new Error('Method not implemented.');
+    const client = await createConnection();
+
+    await client.query(`DELETE FROM PRODUCTS WHERE ID = $1`, [id]);
   }
   async updatePhotoById({
     id,

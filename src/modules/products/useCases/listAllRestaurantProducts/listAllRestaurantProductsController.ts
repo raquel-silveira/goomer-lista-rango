@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import { ListAllRestaurantProductsUseCase } from './listAllRestaurantProductsUseCase';
+import { ListAllRestaurantProductsUseCase } from './ListAllRestaurantProductsUseCase';
 
 class ListAllRestaurantProductsController {
   async handle(request: Request, response: Response): Promise<Response> {

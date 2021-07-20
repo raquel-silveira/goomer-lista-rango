@@ -8,16 +8,16 @@ import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories
 
 import { AppError } from '@shared/errors/AppError';
 
-import { UpdateRestaurantProductUseCase } from './UpdateRestaurantProductUseCase';
+import { DeleteRestaurantProductUseCase } from './DeleteRestaurantProductUseCase';
 
-let updateRestaurantProductUseCase: UpdateRestaurantProductUseCase;
+let deleteRestaurantProductUseCase: DeleteRestaurantProductUseCase;
 let productsRepositoryInMemory: ProductsRepositoryInMemory;
 let promotionsRepositoryInMemory: PromotionsRepositoryInMemory;
 let categoriesRepositoryInMemory: CategoriesRepositoryInMemory;
 let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
 
-describe('Update Restaurant Product', () => {
+describe('Delete Restaurant Product', () => {
   beforeEach(() => {
     openingHoursRepositoryInMemory = new OpeningHoursRepositoryInMemory();
     restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory(
@@ -32,15 +32,13 @@ describe('Update Restaurant Product', () => {
       categoriesRepositoryInMemory.categories,
     );
 
-    updateRestaurantProductUseCase = new UpdateRestaurantProductUseCase(
+    deleteRestaurantProductUseCase = new DeleteRestaurantProductUseCase(
       productsRepositoryInMemory,
-      promotionsRepositoryInMemory,
-      categoriesRepositoryInMemory,
       restaurantsRepositoryInMemory,
     );
   });
 
-  it('should be able to update a product', async () => {
+  it('should be able to delete a restaurant product by id', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -61,50 +59,15 @@ describe('Update Restaurant Product', () => {
       restaurantId: restaurant.id,
     });
 
-    const productUpdated = await updateRestaurantProductUseCase.execute({
-      id: product.id,
-      name: 'Biscoito',
-      price: 3.5,
-      category: 'doce',
-      restaurantId: restaurant.id,
-    });
-
-    expect(productUpdated.name).toBe('Biscoito');
+    await expect(
+      deleteRestaurantProductUseCase.execute({
+        id: product.id,
+        restaurantId: restaurant.id,
+      }),
+    ).resolves.not.toThrow();
   });
 
-  it('should be able to update a product without category', async () => {
-    const restaurant = await restaurantsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460541',
-      name: 'Restaurante Goomer',
-      address: 'Rua São João',
-      number: '500',
-      neighborhood: 'Jardim Tóquio',
-      city: 'Sorocaba',
-      state: 'SP',
-      country: 'Brasil',
-      postal_code: '18279-050',
-    });
-
-    const product = await productsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460542',
-      name: 'Bolacha',
-      price: 3.5,
-      category_id: '1',
-      restaurantId: restaurant.id,
-    });
-
-    const productUpdated = await updateRestaurantProductUseCase.execute({
-      id: product.id,
-      name: 'Biscoito',
-      price: 3.5,
-      category: '',
-      restaurantId: restaurant.id,
-    });
-
-    expect(productUpdated.name).toBe('Biscoito');
-  });
-
-  it('should not be able to update without id param', async () => {
+  it('should not be able to delete without id param', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -126,81 +89,14 @@ describe('Update Restaurant Product', () => {
     });
 
     await expect(
-      updateRestaurantProductUseCase.execute({
+      deleteRestaurantProductUseCase.execute({
         id: '',
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
-        restaurantId: '',
+        restaurantId: restaurant.id,
       }),
     ).rejects.toEqual(new AppError('Id is required'));
   });
 
-  it('should not be able to update without name field', async () => {
-    const restaurant = await restaurantsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460541',
-      name: 'Restaurante Goomer',
-      address: 'Rua São João',
-      number: '500',
-      neighborhood: 'Jardim Tóquio',
-      city: 'Sorocaba',
-      state: 'SP',
-      country: 'Brasil',
-      postal_code: '18279-050',
-    });
-
-    const product = await productsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460542',
-      name: 'Bolacha',
-      price: 3.5,
-      category_id: '1',
-      restaurantId: restaurant.id,
-    });
-
-    await expect(
-      updateRestaurantProductUseCase.execute({
-        id: product.id,
-        name: '',
-        price: 3.5,
-        category: 'doce',
-        restaurantId: restaurant.id,
-      }),
-    ).rejects.toEqual(new AppError('Name is required'));
-  });
-
-  it('should not be able to update without restaurant id param', async () => {
-    const restaurant = await restaurantsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460541',
-      name: 'Restaurante Goomer',
-      address: 'Rua São João',
-      number: '500',
-      neighborhood: 'Jardim Tóquio',
-      city: 'Sorocaba',
-      state: 'SP',
-      country: 'Brasil',
-      postal_code: '18279-050',
-    });
-
-    const product = await productsRepositoryInMemory.create({
-      id: 'a29fc323-5365-4baf-8461-fe2cae460542',
-      name: 'Bolacha',
-      price: 3.5,
-      category_id: '1',
-      restaurantId: restaurant.id,
-    });
-
-    await expect(
-      updateRestaurantProductUseCase.execute({
-        id: product.id,
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
-        restaurantId: '',
-      }),
-    ).rejects.toEqual(new AppError('Restaurant id is required'));
-  });
-
-  it('should not be able to update if id is invalid', async () => {
+  it('should not be able to delete if id is invalid', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -222,17 +118,14 @@ describe('Update Restaurant Product', () => {
     });
 
     await expect(
-      updateRestaurantProductUseCase.execute({
+      deleteRestaurantProductUseCase.execute({
         id: 'wrong-id',
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
         restaurantId: restaurant.id,
       }),
     ).rejects.toEqual(new AppError('Invalid id'));
   });
 
-  it('should not be able to update if restaurant id is invalid', async () => {
+  it('should not be able to delete without id restaurant param', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -254,17 +147,43 @@ describe('Update Restaurant Product', () => {
     });
 
     await expect(
-      updateRestaurantProductUseCase.execute({
+      deleteRestaurantProductUseCase.execute({
         id: product.id,
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
+        restaurantId: '',
+      }),
+    ).rejects.toEqual(new AppError('Restaurant id is required'));
+  });
+
+  it('should not be able to delete if restaurant id is invalid', async () => {
+    const restaurant = await restaurantsRepositoryInMemory.create({
+      id: 'a29fc323-5365-4baf-8461-fe2cae460541',
+      name: 'Restaurante Goomer',
+      address: 'Rua São João',
+      number: '500',
+      neighborhood: 'Jardim Tóquio',
+      city: 'Sorocaba',
+      state: 'SP',
+      country: 'Brasil',
+      postal_code: '18279-050',
+    });
+
+    const product = await productsRepositoryInMemory.create({
+      id: 'a29fc323-5365-4baf-8461-fe2cae460542',
+      name: 'Bolacha',
+      price: 3.5,
+      category_id: '1',
+      restaurantId: restaurant.id,
+    });
+
+    await expect(
+      deleteRestaurantProductUseCase.execute({
+        id: product.id,
         restaurantId: 'wrong-id',
       }),
     ).rejects.toEqual(new AppError('Invalid restaurant id'));
   });
 
-  it('should not be able to update if products does not exists', async () => {
+  it('should not be able to delete if product does not exists', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -277,18 +196,23 @@ describe('Update Restaurant Product', () => {
       postal_code: '18279-050',
     });
 
+    await productsRepositoryInMemory.create({
+      id: 'a29fc323-5365-4baf-8461-fe2cae460542',
+      name: 'Bolacha',
+      price: 3.5,
+      category_id: '1',
+      restaurantId: restaurant.id,
+    });
+
     await expect(
-      updateRestaurantProductUseCase.execute({
-        id: 'a29fc323-5365-4baf-8461-fe2cae460542',
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
+      deleteRestaurantProductUseCase.execute({
+        id: 'a29fc323-5365-4baf-8461-fe2cae460543',
         restaurantId: restaurant.id,
       }),
     ).rejects.toEqual(new AppError('Product not found'));
   });
 
-  it('should not be able to update if restaurant does not exists', async () => {
+  it('should not be able to delete if restaurant does not exists', async () => {
     const restaurant = await restaurantsRepositoryInMemory.create({
       id: 'a29fc323-5365-4baf-8461-fe2cae460541',
       name: 'Restaurante Goomer',
@@ -310,12 +234,9 @@ describe('Update Restaurant Product', () => {
     });
 
     await expect(
-      updateRestaurantProductUseCase.execute({
+      deleteRestaurantProductUseCase.execute({
         id: product.id,
-        name: 'Biscoito',
-        price: 3.5,
-        category: 'doce',
-        restaurantId: '7975d470-a856-48a2-ac1b-b967b3014b66',
+        restaurantId: 'a29fc323-5365-4baf-8461-fe2cae460542',
       }),
     ).rejects.toEqual(new AppError('Restaurant not found'));
   });

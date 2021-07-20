@@ -8,7 +8,7 @@ import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories
 
 import { AppError } from '@shared/errors/AppError';
 
-import { ListAllRestaurantProductsUseCase } from './listAllRestaurantProductsUseCase';
+import { ListAllRestaurantProductsUseCase } from './ListAllRestaurantProductsUseCase';
 
 let listAllRestaurantProductsUseCase: ListAllRestaurantProductsUseCase;
 let productsRepositoryInMemory: ProductsRepositoryInMemory;
