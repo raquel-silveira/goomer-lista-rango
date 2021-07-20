@@ -1,4 +1,5 @@
 import { ICreatePromotionDTO } from '@modules/products/dtos/ICreatePromotionDTO';
+import { IUpdatePromotionDTO } from '@modules/products/dtos/IUpdatePromotionDTO';
 import { Promotion } from '@modules/products/infra/postgres/entities/Promotion';
 import { createConnection } from 'database/connection';
 
@@ -24,6 +25,35 @@ class PromotionsPostgresRepository implements IPromotionsRepository {
       RETURNING DESCRIPTION, PRICE_PROMOTION::FLOAT, START_DATE, FINISH_DATE, START_TIME, FINISH_TIME`,
       [
         id,
+        description,
+        price_promotion,
+        start_date,
+        finish_date,
+        start_time,
+        finish_time,
+        product_id,
+      ],
+    );
+
+    return rows[0];
+  }
+
+  async updateByProductId({
+    description,
+    price_promotion,
+    start_date,
+    finish_date,
+    start_time,
+    finish_time,
+    product_id,
+  }: IUpdatePromotionDTO): Promise<Promotion> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `UPDATE PROMOTIONS SET
+      DESCRIPTION = $1, PRICE_PROMOTION = $2, START_DATE = $3, FINISH_DATE = $4, START_TIME = $5, FINISH_TIME = $6
+      WHERE PRODUCT_ID = $7 RETURNING DESCRIPTION, PRICE_PROMOTION::FLOAT, START_DATE, FINISH_DATE, START_TIME, FINISH_TIME`,
+      [
         description,
         price_promotion,
         start_date,
