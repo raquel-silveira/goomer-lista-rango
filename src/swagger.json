@@ -342,7 +342,7 @@
             "name": "Products"
           }
         ],
-        "summary": "Cadastrar produto",
+        "summary": "Cadastrar produto de um restaurante",
         "description": "Rota utilizada para cadastrar um produto de um restaurante",
         "parameters": [
           {
@@ -380,9 +380,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "schema": {
-                    "$ref": "#/definitions/ProductData"
-                  }
+                  "$ref": "#/definitions/ProductData"
                 }
               }
             }
@@ -536,6 +534,70 @@
           }
         }
       }
+    },
+
+    "/products/photo/{restaurantId}/{id}": {
+      "patch": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Atualizar foto de um produto de um restaurante",
+        "description": "Rota utilizada para atualizar a foto de um produto de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do produto",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "example": {
+                  "photo": "produto.jpg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ProductData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   },
   "schemes": ["https", "http"],
@@ -653,6 +715,7 @@
       "type": "object",
       "example": {
         "name": "Barca de Sushi",
+        "photo": "25f88d076f8f355bd90a-produto.jpg",
         "price": 44.50,
         "category": "Comida japonesa",
         "promotion": {
