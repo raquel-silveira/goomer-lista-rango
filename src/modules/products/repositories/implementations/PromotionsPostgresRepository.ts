@@ -66,6 +66,29 @@ class PromotionsPostgresRepository implements IPromotionsRepository {
 
     return rows[0];
   }
+
+  async findByProductId({
+    productId,
+  }: {
+    productId: string;
+  }): Promise<Promotion> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `SElECT
+      jsonb_build_object(
+        'description', PM.DESCRIPTION,
+        'price_promotion', PM.PRICE_PROMOTION,
+        'start_date', PM.START_DATE,
+        'finish_date', PM.FINISH_DATE,
+        'start_time', PM.FINISH_TIME,
+        'finish_time', PM.FINISH_TIME
+      ) AS promotion FROM PROMOTIONS PM WHERE PRODUCT_ID = $1`,
+      [productId],
+    );
+
+    return rows[0].promotion;
+  }
 }
 
 export { PromotionsPostgresRepository };

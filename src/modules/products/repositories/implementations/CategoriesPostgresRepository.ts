@@ -33,6 +33,17 @@ class CategoriesPostgresRepository implements ICategoriesRepository {
 
     return rows[0];
   }
+
+  async findById(id: string): Promise<Category> {
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `SElECT NAME FROM CATEGORIES WHERE ID = $1`,
+      [id],
+    );
+
+    return rows[0];
+  }
 }
 
 export { CategoriesPostgresRepository };

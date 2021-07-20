@@ -1,4 +1,3 @@
-import { Category } from '@modules/products/infra/postgres/entities/Category';
 import { ICategoriesRepository } from '@modules/products/repositories/ICategoriesRepository';
 import {
   IProductsRepository,
@@ -9,49 +8,38 @@ import { IRestaurantsRepository } from '@modules/restaurants/repositories/IResta
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
+import { IStorageProvider } from '@shared/container/providers/StorageProvider/IStorageProvider';
 import { AppError } from '@shared/errors/AppError';
-
-interface IPromotion {
-  description: string;
-  price_promotion: number;
-  start_date: string;
-  finish_date: string;
-  start_time: string;
-  finish_time: string;
-}
 
 interface IRequest {
   id: string;
   restaurantId: string;
-  name: string;
-  price: number;
-  category: string;
-  promotion?: IPromotion;
+  photoFilename?: string;
 }
 
 @injectable()
-class UpdateRestaurantProductUseCase {
+class UploadPhotoRestaurantProductUseCase {
   constructor(
     @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
 
-    @inject('PromotionsRepository')
-    private promotionsRepository: IPromotionsRepository,
-
     @inject('CategoriesRepository')
     private categoriesRepository: ICategoriesRepository,
 
+    @inject('PromotionsRepository')
+    private promotionsRepository: IPromotionsRepository,
+
     @inject('RestaurantsRepository')
     private restaurantsRepository: IRestaurantsRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   async execute({
     id,
     restaurantId,
-    name,
-    price,
-    category,
-    promotion,
+    photoFilename,
   }: IRequest): Promise<IProductsResponse> {
     if (!id) {
       throw new AppError('Id is required');
@@ -69,15 +57,15 @@ class UpdateRestaurantProductUseCase {
       throw new AppError('Invalid restaurant id');
     }
 
-    if (!name) {
-      throw new AppError('Name is required');
+    if (!photoFilename) {
+      throw new AppError('Invalid file');
     }
 
-    const restaurantFound = await this.restaurantsRepository.findOne({
+    const restaurant = await this.restaurantsRepository.findOne({
       id: restaurantId,
     });
 
-    if (!restaurantFound) {
+    if (!restaurant) {
       throw new AppError('Restaurant not found');
     }
 
@@ -87,49 +75,38 @@ class UpdateRestaurantProductUseCase {
       throw new AppError('Product not found');
     }
 
-    let categoryInfo: Category;
-
-    if (category) {
-      const categoryFound = await this.categoriesRepository.findByName(
-        category,
-      );
-
-      if (categoryFound) {
-        categoryInfo = categoryFound;
-      } else {
-        const newCategory = {
-          ...new Category(),
-          name: category,
-          restaurantId,
-        };
-
-        const categoryCreated = await this.categoriesRepository.create(
-          newCategory,
-        );
-        categoryInfo = categoryCreated;
-      }
+    if (product.photo) {
+      await this.storageProvider.deleteFile(product.photo);
     }
 
-    const updatedProduct = await this.productsRepository.updateById({
+    const storagePhotoFilename = await this.storageProvider.saveFile(
+      photoFilename,
+    );
+
+    const productPhotoUpdated = await this.productsRepository.updatePhotoById({
       id,
-      name,
-      price,
-      category_id: categoryInfo?.id || null,
+      photoFilename: storagePhotoFilename,
     });
 
-    const updatedPromotion = await this.promotionsRepository.updateByProductId({
-      product_id: id,
-      ...promotion,
+    const categoryFound = await this.categoriesRepository.findById(
+      productPhotoUpdated.category_id,
+    );
+
+    const promotionFound = await this.promotionsRepository.findByProductId({
+      productId: productPhotoUpdated.id,
     });
 
-    const productPromotionUpdated = {
-      ...updatedProduct,
-      category: categoryInfo?.name || null,
-      promotion: updatedPromotion,
+    const productCategoryPromotion = {
+      id: productPhotoUpdated.id,
+      name: productPhotoUpdated.name,
+      photo: productPhotoUpdated.photo,
+      price: productPhotoUpdated.price,
+      category: categoryFound?.name || null,
+      promotion: { ...promotionFound },
     };
 
-    return productPromotionUpdated;
+    return productCategoryPromotion;
   }
 }
 
-export { UpdateRestaurantProductUseCase };
+export { UploadPhotoRestaurantProductUseCase };

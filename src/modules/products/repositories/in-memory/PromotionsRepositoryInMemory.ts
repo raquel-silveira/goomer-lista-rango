@@ -74,6 +74,22 @@ class PromotionsRepositoryInMemory implements IPromotionsRepository {
 
     return updatedPromotion;
   }
+
+  async findByProductId({
+    productId,
+  }: {
+    productId: string;
+  }): Promise<Promotion> {
+    const promotionFound = this.promotions.find(
+      promotion => promotion.product_id === productId,
+    );
+
+    if (!promotionFound) {
+      return null;
+    }
+
+    return promotionFound;
+  }
 }
 
 export { PromotionsRepositoryInMemory };

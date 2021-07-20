@@ -13,7 +13,7 @@ let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
 let storageProviderInMemory: StorageProviderInMemory;
 
-describe('UpdateUserAvatarService', () => {
+describe('Upload Restaurant Photo', () => {
   beforeEach(() => {
     openingHoursRepositoryInMemory = new OpeningHoursRepositoryInMemory();
     restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory(
