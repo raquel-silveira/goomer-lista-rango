@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { OpeningHoursRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/OpeningHoursRespositoryInMemory';
 import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/RestaurantsRepositoryInMemory';
 
+import { StorageProviderInMemory } from '@shared/container/providers/StorageProvider/in-memory/StorageProviderInMemory';
 import { AppError } from '@shared/errors/AppError';
 
 import { DeleteRestaurantUseCase } from './DeleteRestaurantUseCase';
@@ -10,6 +11,7 @@ import { DeleteRestaurantUseCase } from './DeleteRestaurantUseCase';
 let deleteRestaurantUseCase: DeleteRestaurantUseCase;
 let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
+let storageProviderInMemory: StorageProviderInMemory;
 
 describe('Delete Restaurant', () => {
   beforeEach(() => {
@@ -17,9 +19,11 @@ describe('Delete Restaurant', () => {
     restaurantsRepositoryInMemory = new RestaurantsRepositoryInMemory(
       openingHoursRepositoryInMemory.openingHoursStorage,
     );
+    storageProviderInMemory = new StorageProviderInMemory();
 
     deleteRestaurantUseCase = new DeleteRestaurantUseCase(
       restaurantsRepositoryInMemory,
+      storageProviderInMemory,
     );
   });
 
@@ -34,6 +38,11 @@ describe('Delete Restaurant', () => {
       state: 'SP',
       country: 'Brasil',
       postal_code: '18279-050',
+    });
+
+    await restaurantsRepositoryInMemory.updatePhotoById({
+      id: restaurant.id,
+      photoFilename: 'image.jpg',
     });
 
     await expect(
