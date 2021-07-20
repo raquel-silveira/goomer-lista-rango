@@ -23,6 +23,8 @@ interface IPromotionsRepository {
     finish_time,
     product_id,
   }: IUpdatePromotionDTO): Promise<Promotion>;
+
+  findByProductId({ productId }: { productId: string }): Promise<Promotion>;
 }
 
 export { IPromotionsRepository };

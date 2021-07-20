@@ -36,24 +36,24 @@ class ProductsRepositoryInMemory implements IProductsRepository {
   }
 
   async findOne({ id }: { id: string }): Promise<IProductsResponse> {
-    const productFounded = this.products.find(product => product.id === id);
+    const productFound = this.products.find(product => product.id === id);
 
-    if (!productFounded) {
+    if (!productFound) {
       return null;
     }
 
     const productPromotion = {
-      id: productFounded.id,
-      name: productFounded.name,
-      price: productFounded.price,
-      photo: productFounded.photo,
+      id: productFound.id,
+      name: productFound.name,
+      price: productFound.price,
+      photo: productFound.photo,
       category:
         this.categories.find(
-          category => category.id === productFounded.category_id,
+          category => category.id === productFound.category_id,
         )?.name || null,
       promotion:
         this.promotions.find(
-          promotion => promotion.product_id === productFounded.id,
+          promotion => promotion.product_id === productFound.id,
         ) || null,
     };
 
@@ -65,15 +65,15 @@ class ProductsRepositoryInMemory implements IProductsRepository {
   }: {
     restaurantId: string;
   }): Promise<IProductsResponse[]> {
-    const productsFounded = this.products.filter(
+    const productsFound = this.products.filter(
       product => product.restaurant_id === restaurantId,
     );
 
-    if (!productsFounded) {
+    if (!productsFound) {
       return null;
     }
 
-    const productPromotion = productsFounded.map(product => ({
+    const productPromotion = productsFound.map(product => ({
       id: product.id,
       name: product.name,
       price: product.price,
