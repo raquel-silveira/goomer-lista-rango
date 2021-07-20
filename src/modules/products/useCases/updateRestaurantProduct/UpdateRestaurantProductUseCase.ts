@@ -1,6 +1,4 @@
 import { Category } from '@modules/products/infra/postgres/entities/Category';
-import { Product } from '@modules/products/infra/postgres/entities/Product';
-import { Promotion } from '@modules/products/infra/postgres/entities/Promotion';
 import { ICategoriesRepository } from '@modules/products/repositories/ICategoriesRepository';
 import {
   IProductsRepository,
@@ -14,15 +12,16 @@ import { validate, version } from 'uuid';
 import { AppError } from '@shared/errors/AppError';
 
 interface IPromotion {
-  description?: string;
-  price_promotion?: number;
-  start_date?: string;
-  finish_date?: string;
-  start_time?: string;
-  finish_time?: string;
+  description: string;
+  price_promotion: number;
+  start_date: string;
+  finish_date: string;
+  start_time: string;
+  finish_time: string;
 }
 
 interface IRequest {
+  id: string;
   restaurantId: string;
   name: string;
   price: number;
@@ -31,7 +30,7 @@ interface IRequest {
 }
 
 @injectable()
-class CreateRestaurantProductUseCase {
+class UpdateRestaurantProductUseCase {
   constructor(
     @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
@@ -45,15 +44,23 @@ class CreateRestaurantProductUseCase {
     @inject('RestaurantsRepository')
     private restaurantsRepository: IRestaurantsRepository,
   ) {}
-  s;
 
   async execute({
+    id,
     restaurantId,
     name,
     price,
     category,
     promotion,
   }: IRequest): Promise<IProductsResponse> {
+    if (!id) {
+      throw new AppError('Id is required');
+    }
+
+    if (!validate(id) || version(id) !== 4) {
+      throw new AppError('Invalid id');
+    }
+
     if (!restaurantId) {
       throw new AppError('Restaurant id is required');
     }
@@ -72,6 +79,12 @@ class CreateRestaurantProductUseCase {
 
     if (!restaurantFound) {
       throw new AppError('Restaurant not found');
+    }
+
+    const product = await this.productsRepository.findOne({ id });
+
+    if (!product) {
+      throw new AppError('Product not found');
     }
 
     let categoryInfo: Category;
@@ -97,34 +110,26 @@ class CreateRestaurantProductUseCase {
       }
     }
 
-    const product = {
-      ...new Product(),
+    const updatedProduct = await this.productsRepository.updateById({
+      id,
       name,
       price,
       category_id: categoryInfo?.id,
-      restaurantId,
-    };
+    });
 
-    const productCreated = await this.productsRepository.create(product);
-
-    const newPromotion = {
-      ...new Promotion(),
+    const updatedPromotion = await this.promotionsRepository.updateByProductId({
+      product_id: id,
       ...promotion,
-      product_id: product.id,
-    };
+    });
 
-    const promotionCreated = await this.promotionsRepository.create(
-      newPromotion,
-    );
-
-    const productPromotionCreated = {
-      ...productCreated,
+    const productPromotionUpdated = {
+      ...updatedProduct,
       category: categoryInfo?.name,
-      promotion: promotionCreated,
+      promotion: updatedPromotion,
     };
 
-    return productPromotionCreated;
+    return productPromotionUpdated;
   }
 }
 
-export { CreateRestaurantProductUseCase };
+export { UpdateRestaurantProductUseCase };

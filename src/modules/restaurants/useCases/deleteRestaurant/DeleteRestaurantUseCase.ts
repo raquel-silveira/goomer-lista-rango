@@ -12,7 +12,7 @@ interface IRequest {
 class DeleteRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
   ) {}
 
   async execute({ id }: IRequest): Promise<void> {
@@ -24,13 +24,13 @@ class DeleteRestaurantUseCase {
       throw new AppError('Invalid id');
     }
 
-    const restaurant = await this.restaurantRepository.findOne({ id });
+    const restaurant = await this.restaurantsRepository.findOne({ id });
 
     if (!restaurant) {
       throw new AppError('Restaurant not found');
     }
 
-    await this.restaurantRepository.delete({ id });
+    await this.restaurantsRepository.delete({ id });
   }
 }
 

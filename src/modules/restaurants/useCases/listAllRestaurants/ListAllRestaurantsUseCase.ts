@@ -8,11 +8,11 @@ import { inject, injectable } from 'tsyringe';
 class ListAllRestaurantsUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
   ) {}
 
   async execute(): Promise<IRestaurantsResponse[]> {
-    const restaurants = await this.restaurantRepository.findAll();
+    const restaurants = await this.restaurantsRepository.findAll();
 
     return restaurants;
   }
