@@ -6,6 +6,7 @@ import { PromotionsRepositoryInMemory } from '@modules/products/repositories/in-
 import { OpeningHoursRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/OpeningHoursRespositoryInMemory';
 import { RestaurantsRepositoryInMemory } from '@modules/restaurants/repositories/in-memory/RestaurantsRepositoryInMemory';
 
+import { StorageProviderInMemory } from '@shared/container/providers/StorageProvider/in-memory/StorageProviderInMemory';
 import { AppError } from '@shared/errors/AppError';
 
 import { DeleteRestaurantProductUseCase } from './DeleteRestaurantProductUseCase';
@@ -16,6 +17,7 @@ let promotionsRepositoryInMemory: PromotionsRepositoryInMemory;
 let categoriesRepositoryInMemory: CategoriesRepositoryInMemory;
 let restaurantsRepositoryInMemory: RestaurantsRepositoryInMemory;
 let openingHoursRepositoryInMemory: OpeningHoursRepositoryInMemory;
+let storageProviderInMemory: StorageProviderInMemory;
 
 describe('Delete Restaurant Product', () => {
   beforeEach(() => {
@@ -26,6 +28,7 @@ describe('Delete Restaurant Product', () => {
 
     promotionsRepositoryInMemory = new PromotionsRepositoryInMemory();
     categoriesRepositoryInMemory = new CategoriesRepositoryInMemory();
+    storageProviderInMemory = new StorageProviderInMemory();
 
     productsRepositoryInMemory = new ProductsRepositoryInMemory(
       promotionsRepositoryInMemory.promotions,
@@ -35,6 +38,7 @@ describe('Delete Restaurant Product', () => {
     deleteRestaurantProductUseCase = new DeleteRestaurantProductUseCase(
       productsRepositoryInMemory,
       restaurantsRepositoryInMemory,
+      storageProviderInMemory,
     );
   });
 
@@ -57,6 +61,11 @@ describe('Delete Restaurant Product', () => {
       price: 3.5,
       category_id: '1',
       restaurantId: restaurant.id,
+    });
+
+    await productsRepositoryInMemory.updatePhotoById({
+      id: product.id,
+      photoFilename: 'image.jpg',
     });
 
     await expect(

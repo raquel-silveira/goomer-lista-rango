@@ -3,6 +3,7 @@ import { IRestaurantsRepository } from '@modules/restaurants/repositories/IResta
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
+import { IStorageProvider } from '@shared/container/providers/StorageProvider/IStorageProvider';
 import { AppError } from '@shared/errors/AppError';
 
 interface IRequest {
@@ -18,6 +19,9 @@ class DeleteRestaurantProductUseCase {
 
     @inject('RestaurantsRepository')
     private restaurantsRepository: IRestaurantsRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {}
 
   async execute({ id, restaurantId }: IRequest): Promise<void> {
@@ -49,6 +53,10 @@ class DeleteRestaurantProductUseCase {
 
     if (!product) {
       throw new AppError('Product not found');
+    }
+
+    if (product.photo) {
+      await this.storageProvider.deleteFile(product.photo);
     }
 
     await this.productsRepository.delete({ id });

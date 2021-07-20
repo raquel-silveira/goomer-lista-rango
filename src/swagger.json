@@ -1,0 +1,732 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "## Documentação da API Goomer Lista Rango\n---\n# Utilidade\n## Arquivos para download:\n- [**Rotas Insomnia**](https://drive.google.com/file/d/1_PwmFF5rl3zdSRj5YUo9rRZ9WYGMwOlQ/view?usp=sharing)\n---",
+    "version": "1.0.0",
+    "title": "Goomer Lista Rango",
+    "contact": {
+      "email": "rsilveira136@gmail.com"
+    }
+  },
+  "basePath": "/",
+  "paths": {
+    "/restaurants": {
+      "post": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Cadastrar restaurante",
+        "description": "Rota utilizada para o cadastro de novos restaurantes",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "Restaurante Goomer",
+                  "address": "Rua São João",
+                  "number": "500",
+                  "neighborhood": "Bairro Toquio",
+                  "city": "Sorocaba",
+                  "state": "SP",
+                  "country": "Brasil",
+                  "postal_code": "18279-050",
+                  "opening_hours": [
+                    {
+                      "weekday": "sunday",
+                      "start_time": "11:00",
+                      "finish_time": "15:00"
+                    },
+                    {
+                      "weekday": "monday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "tuesday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "wednesday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "thursday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "friday",
+                      "start_time": "11:00",
+                      "finish_time": "15:00"
+                    },
+                    {
+                      "weekday": "saturday",
+                      "start_time": "10:00",
+                      "finish_time": "14:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/RestaurantData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Name is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Listar todos os restaurantes",
+        "description": "Rota utilizada para visualizar os dados de todos os restaurantes",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/RestaurantData"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/restaurants/{id}": {
+      "get": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Listar um restaurante",
+        "description": "Rota utilizada para listar os dados de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/RestaurantData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Atualizar restaurante",
+        "description": "Rota utilizada para atualizar os dados de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "Restaurante Goomer",
+                  "address": "Rua São João",
+                  "number": "500",
+                  "neighborhood": "Bairro Toquio",
+                  "city": "Sorocaba",
+                  "state": "SP",
+                  "country": "Brasil",
+                  "postal_code": "18279-050",
+                  "opening_hours": [
+                    {
+                      "weekday": "sunday",
+                      "start_time": "11:00",
+                      "finish_time": "15:00"
+                    },
+                    {
+                      "weekday": "monday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "tuesday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "wednesday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "thursday",
+                      "start_time": "11:00",
+                      "finish_time": "14:00"
+                    },
+                    {
+                      "weekday": "friday",
+                      "start_time": "11:00",
+                      "finish_time": "15:00"
+                    },
+                    {
+                      "weekday": "saturday",
+                      "start_time": "10:00",
+                      "finish_time": "14:00"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/RestaurantData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Deletar um restaurante",
+        "description": "Rota utilizada para deletar um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/restaurants/photo/{id}": {
+      "patch": {
+        "tags": [
+          {
+            "name": "Restaurants"
+          }
+        ],
+        "summary": "Atualizar foto do restaurante",
+        "description": "Rota utilizada para atualizar a foto do restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "example": {
+                  "photo": "restaurante.jpg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/RestaurantData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/products/{restaurantId}": {
+      "post": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Cadastrar produto de um restaurante",
+        "description": "Rota utilizada para cadastrar um produto de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "Barca de Sushi",
+                  "price": 44.50,
+                  "category": "Comida japonesa",
+                  "promotion": {
+                    "description": "Metade do preço",
+                    "price_promotion": 22.25,
+                    "start_date": "2021-07-21",
+                    "finish_date": "2021-08-10",
+                    "start_time": "13:00",
+                    "finish_time": "15:00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ProductData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description":"Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Listar todos os produtos de um restaurante",
+        "description": "Rota utilizada para listar todos os produtos de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ProductData"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Restaurant id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/products/{restaurantId}/{id}": {
+      "put": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Editar um produto de um restaurante",
+        "description": "Rota utilizada para editar os dados de um produto de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do produto",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "name": "Barca de Sushi",
+                  "price": 44.50,
+                  "category": "Comida japonesa",
+                  "promotion": {
+                    "description": "Metade do preço",
+                    "price_promotion": 22.25,
+                    "start_date": "2021-07-21",
+                    "finish_date": "2021-08-10",
+                    "start_time": "13:00",
+                    "finish_time": "15:00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ProductData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Deletar um produto de um restaurante",
+        "description": "Rota utilizada para deletar um produto de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do produto",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+
+    "/products/photo/{restaurantId}/{id}": {
+      "patch": {
+        "tags": [
+          {
+            "name": "Products"
+          }
+        ],
+        "summary": "Atualizar foto de um produto de um restaurante",
+        "description": "Rota utilizada para atualizar a foto de um produto de um restaurante",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "description": "Id do produto",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "restaurantId",
+            "type": "string",
+            "description": "Id do restaurante",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "example": {
+                  "photo": "produto.jpg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/ProductData"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Id is required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "schemes": ["https", "http"],
+  "definitions": {
+    "CreateRestaurant": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Restaurante Goomer"
+        },
+        "address": {
+          "type": "string",
+          "example": "Rua São João"
+        },
+        "number": {
+          "type": "string",
+          "example": "500"
+        },
+        "neighborhood": {
+          "type": "string",
+          "example": "Tóquio"
+        },
+        "city": {
+          "type": "string",
+          "example": "Sorocaba"
+        },
+        "state": {
+          "type": "string",
+          "example": "SP"
+        },
+        "country": {
+          "type": "string",
+          "example": "Brasil"
+        },
+        "postal_code": {
+          "type": "string",
+          "example": "18279-350"
+        },
+        "opening_hours": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "weekday": {
+                "type": "string",
+                "example": "monday"
+              },
+              "start_time": {
+                "type": "string",
+                "example": "10:00"
+              },
+              "finish_time": {
+                "type": "string",
+                "example": "15:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "RestaurantData": {
+      "type": "object",
+      "example": {
+        "id": "4d5367ba-9d1e-49bd-89ad-6898d1aa4e5e",
+        "name": "Restaurante Goomer",
+        "photo": "25f88d076f8f355bd90a-restaurante.jpg",
+        "address": "Rua São João",
+        "number": "500",
+        "neighborhood": "Bairro Toquio",
+        "city": "Sorocaba",
+        "state": "SP",
+        "country": "Brasil",
+        "postal_code": "18279-050",
+        "opening_hours": [
+          {
+            "weekday": "sunday",
+            "start_time": "11:00",
+            "finish_time": "15:00"
+          },
+          {
+            "weekday": "monday",
+            "start_time": "11:00",
+            "finish_time": "14:00"
+          },
+          {
+            "weekday": "tuesday",
+            "start_time": "11:00",
+            "finish_time": "14:00"
+          },
+          {
+            "weekday": "wednesday",
+            "start_time": "11:00",
+            "finish_time": "14:00"
+          },
+          {
+            "weekday": "thursday",
+            "start_time": "11:00",
+            "finish_time": "14:00"
+          },
+          {
+            "weekday": "friday",
+            "start_time": "11:00",
+            "finish_time": "15:00"
+          },
+          {
+            "weekday": "saturday",
+            "start_time": "10:00",
+            "finish_time": "14:00"
+          }
+        ]
+      }
+    },
+    "ProductData": {
+      "type": "object",
+      "example": {
+        "name": "Barca de Sushi",
+        "photo": "25f88d076f8f355bd90a-produto.jpg",
+        "price": 44.50,
+        "category": "Comida japonesa",
+        "promotion": {
+          "description": "Metade do preço",
+          "price_promotion": 22.25,
+          "start_date": "2021-07-21",
+          "finish_date": "2021-08-10",
+          "start_time": "13:00",
+          "finish_time": "15:00"
+        }
+      }
+    }
+  }
+}

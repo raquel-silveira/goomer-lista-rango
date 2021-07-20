@@ -17,7 +17,7 @@ class ProductsPostgresRepository implements IProductsRepository {
 
     const { rows } = await client.query(
       `INSERT INTO PRODUCTS(ID, NAME, PRICE, CATEGORY_ID, RESTAURANT_ID) VALUES($1, $2, $3, $4, $5)
-      RETURNING ID, NAME, PRICE::FLOAT`,
+      RETURNING ID, NAME, PHOTO, PRICE::FLOAT`,
       [id, name, price, category_id, restaurantId],
     );
 
