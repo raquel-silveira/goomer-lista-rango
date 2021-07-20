@@ -97,7 +97,14 @@ class ProductsPostgresRepository implements IProductsRepository {
     id: string;
     photoFilename: string;
   }): Promise<Product> {
-    throw new Error('Method not implemented.');
+    const client = await createConnection();
+
+    const { rows } = await client.query(
+      `UPDATE PRODUCTS SET PHOTO = $1 WHERE ID = $2 RETURNING ID, NAME, PHOTO, PRICE::FLOAT, CATEGORY_ID`,
+      [photoFilename, id],
+    );
+
+    return rows[0];
   }
 }
 
