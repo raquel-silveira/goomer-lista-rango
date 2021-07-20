@@ -34,6 +34,32 @@ class ProductsRepositoryInMemory implements IProductsRepository {
 
     return product;
   }
+
+  async findOne({ id }: { id: string }): Promise<IProductsResponse> {
+    const productFounded = this.products.find(product => product.id === id);
+
+    if (!productFounded) {
+      return null;
+    }
+
+    const productPromotion = {
+      id: productFounded.id,
+      name: productFounded.name,
+      price: productFounded.price,
+      photo: productFounded.photo,
+      category:
+        this.categories.find(
+          category => category.id === productFounded.category_id,
+        )?.name || null,
+      promotion:
+        this.promotions.find(
+          promotion => promotion.product_id === productFounded.id,
+        ) || null,
+    };
+
+    return productPromotion;
+  }
+
   async findByRestaurantId({
     restaurantId,
   }: {
@@ -63,11 +89,37 @@ class ProductsRepositoryInMemory implements IProductsRepository {
 
     return productPromotion;
   }
-  async updateById({ id, name, price }: IUpdateProductDTO): Promise<Product> {
-    throw new Error('Method not implemented.');
+  async updateById({
+    id,
+    name,
+    price,
+    category_id,
+  }: IUpdateProductDTO): Promise<Product> {
+    const productFound = this.products.find(product => product.id === id);
+
+    if (!productFound) {
+      return null;
+    }
+
+    const updatedFields = {
+      ...(name ? { name } : {}),
+      ...(price ? { price } : {}),
+      ...(category_id ? { category_id } : {}),
+    };
+
+    const productIndex = this.products.findIndex(product => product.id === id);
+
+    this.products[productIndex] = {
+      ...this.products[productIndex],
+      ...updatedFields,
+    };
+
+    const updatedProduct = { ...this.products[productIndex] };
+
+    return updatedProduct;
   }
   async delete({ id }: { id: string }): Promise<void> {
-    throw new Error('Method not implemented.');
+    this.products = this.products.filter(product => product.id !== id);
   }
   async updatePhotoById({
     id,
@@ -76,7 +128,19 @@ class ProductsRepositoryInMemory implements IProductsRepository {
     id: string;
     photoFilename: string;
   }): Promise<Product> {
-    throw new Error('Method not implemented.');
+    const productFound = this.products.find(product => product.id === id);
+
+    if (!productFound) {
+      return null;
+    }
+
+    const productIndex = this.products.findIndex(product => product.id === id);
+
+    this.products[productIndex].photo = photoFilename;
+
+    const updatedPhotoProduct = { ...this.products[productIndex] };
+
+    return updatedPhotoProduct;
   }
 }
 

@@ -18,7 +18,7 @@ interface IRequest {
 class UploadPhotoRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
 
     @inject('OpeningHoursRepository')
     private openingHoursRepository: IOpeningHoursRepository,
@@ -43,7 +43,7 @@ class UploadPhotoRestaurantUseCase {
       throw new AppError('Invalid file');
     }
 
-    const restaurant = await this.restaurantRepository.findOne({ id });
+    const restaurant = await this.restaurantsRepository.findOne({ id });
 
     if (!restaurant) {
       throw new AppError('Restaurant not found');
@@ -58,7 +58,7 @@ class UploadPhotoRestaurantUseCase {
     );
 
     const restaurantPhotoUpdated =
-      await this.restaurantRepository.updatePhotoById({
+      await this.restaurantsRepository.updatePhotoById({
         id,
         photoFilename: storagePhotoFilename,
       });

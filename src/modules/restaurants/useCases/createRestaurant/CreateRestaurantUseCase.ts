@@ -31,7 +31,7 @@ interface IRequest {
 class CreateRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
 
     @inject('OpeningHoursRepository')
     private openingHoursRepository: IOpeningHoursRepository,
@@ -52,7 +52,7 @@ class CreateRestaurantUseCase {
       throw new AppError('Name is required');
     }
 
-    if (state.length !== 2) {
+    if (state && state.length !== 2) {
       throw new AppError('State field must contain two characters');
     }
 
@@ -84,7 +84,7 @@ class CreateRestaurantUseCase {
       postal_code,
     };
 
-    const restaurantCreated = await this.restaurantRepository.create(
+    const restaurantCreated = await this.restaurantsRepository.create(
       restaurant,
     );
 

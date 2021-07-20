@@ -101,7 +101,7 @@ class CreateRestaurantProductUseCase {
       ...new Product(),
       name,
       price,
-      category_id: categoryInfo.id,
+      category_id: categoryInfo?.id,
       restaurantId,
     };
 
@@ -119,7 +119,7 @@ class CreateRestaurantProductUseCase {
 
     const productPromotionCreated = {
       ...productCreated,
-      category: categoryInfo.name,
+      category: categoryInfo?.name,
       promotion: promotionCreated,
     };
 

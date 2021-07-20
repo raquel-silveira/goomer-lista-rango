@@ -15,7 +15,7 @@ interface IRequest {
 class ListOneRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
   ) {}
 
   async execute({ id }: IRequest): Promise<IRestaurantsResponse> {
@@ -27,7 +27,7 @@ class ListOneRestaurantUseCase {
       throw new AppError('Invalid id');
     }
 
-    const restaurant = await this.restaurantRepository.findOne({ id });
+    const restaurant = await this.restaurantsRepository.findOne({ id });
 
     if (!restaurant) {
       throw new AppError('Restaurant not found');

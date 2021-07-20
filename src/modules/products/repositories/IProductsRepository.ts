@@ -21,6 +21,8 @@ interface IProductsRepository {
     restaurantId,
   }: ICreateProductDTO): Promise<Product>;
 
+  findOne({ id }: { id: string }): Promise<IProductsResponse>;
+
   findByRestaurantId({
     restaurantId,
   }: {

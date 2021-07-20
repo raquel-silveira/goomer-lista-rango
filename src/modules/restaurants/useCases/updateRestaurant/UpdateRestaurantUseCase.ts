@@ -32,7 +32,7 @@ interface IRequest {
 class UpdateRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
 
     @inject('OpeningHoursRepository')
     private openingHoursRepository: IOpeningHoursRepository,
@@ -62,7 +62,7 @@ class UpdateRestaurantUseCase {
       throw new AppError('Name is required');
     }
 
-    if (state.length !== 2) {
+    if (state && state.length !== 2) {
       throw new AppError('State field must contain two characters');
     }
 
@@ -82,13 +82,13 @@ class UpdateRestaurantUseCase {
       }
     });
 
-    const restaurant = await this.restaurantRepository.findOne({ id });
+    const restaurant = await this.restaurantsRepository.findOne({ id });
 
     if (!restaurant) {
       throw new AppError('Restaurant not found');
     }
 
-    const updatedRestaurant = await this.restaurantRepository.updateById({
+    const updatedRestaurant = await this.restaurantsRepository.updateById({
       id,
       name,
       address,
