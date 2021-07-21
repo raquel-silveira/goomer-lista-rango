@@ -25,7 +25,7 @@
 <br>
 
 ### 🎲 Rodando a aplicação
-
+- Iniciando:
 ```bash
 # Clonando o repositório
 $ git clone https://github.com/strixsoul/goomer-lista-rango.git
@@ -35,13 +35,40 @@ $ cd goomer-lista-rango
 
 # Instalando dependências
 $ yarn
+```
 
+- Desenvolvimento:
+```bash
 # Rodando em desenvolvimento
 $ docker-compose up
+```
 
-# Rodando em produção
+- Produção
+```bash
+obs.: copie o arquivo .env.example para um .env
+
+# rodando em produção
 $ docker-compose -f docker-compose.production.yml up
 ```
+
+
+- Se preferir, suba apenas o container do PostgreSQL:
+
+```bash
+obs.: copie o arquivo .env.example para um .env
+
+# Subindo a base de dados no Docker
+$ docker-compose up -d database
+
+# Gerando build do projeto
+$ yarn build
+
+# Executando a build
+$ yarn start
+```
+
+- Após o fim da execução, a aplicação se encontrará em: [http://localhost:3333/](http://localhost:3333/)
+
 <br>
 
 ### 🛠 Tecnologias
@@ -61,23 +88,23 @@ As seguintes ferramentas foram usadas na construção do projeto:
 ### 🔨 Estrutura
 
 <!--ts-->
-  * DER do banco de dados
+* DER do banco de dados
 
-  <h1 >
-    <img alt="GoomerListaRangoDB" title="#GoomerListaRangoDB" src="./docs/goomer_lista_rango_db.png" width="890px"/>
-  </h1>
+<h1 >
+  <img alt="GoomerListaRangoDB" title="#GoomerListaRangoDB" src="./docs/goomer_lista_rango_db.png" width="890px"/>
+</h1>
 
-  * Fluxo da aplicação
-    * A estrutura da aplicação é baseada nos conceitos de arquitetura limpa, seguindo o fluxo:
-  controller > usecase > repository > storage
+* Fluxo da aplicação
+  * A estrutura da aplicação é baseada nos conceitos de arquitetura limpa, seguindo o fluxo:
+controller > usecase > repository > storage
 
-  <h1>
-    <img alt="Fluxo" title="#Fluxo" src="./docs/fluxo.png" />
-  </h1>
+<h1>
+  <img alt="Fluxo" title="#Fluxo" src="./docs/fluxo.png" />
+</h1>
 
-  <br>
+<br>
 
-  ### 🧪 Testes unitários
+### 🧪 Testes unitários
 
 ```bash
 # Rodando os testes
@@ -104,7 +131,6 @@ $ yarn test
 <br>
 
 ### 💡 Pontos de melhoria
-- Validar intervalo mínimo de 15 minutos para os horários;
 - Inserir paginação nas rotas de listagem;
 - Comprimir fotos enviadas para consumo mais rápido;
 - Enviar fotos para um bucket online de imagens (ex.: Amazon S3);

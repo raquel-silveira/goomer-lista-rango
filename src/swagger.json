@@ -548,16 +548,16 @@
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "restaurantId",
             "type": "string",
-            "description": "Id do produto",
+            "description": "Id do restaurante",
             "required": true
           },
           {
             "in": "path",
-            "name": "restaurantId",
+            "name": "id",
             "type": "string",
-            "description": "Id do restaurante",
+            "description": "Id do produto",
             "required": true
           }
         ],
