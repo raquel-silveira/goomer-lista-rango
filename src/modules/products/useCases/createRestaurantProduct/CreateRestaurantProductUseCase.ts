@@ -8,6 +8,7 @@ import {
 } from '@modules/products/repositories/IProductsRepository';
 import { IPromotionsRepository } from '@modules/products/repositories/IPromotionsRepository';
 import { IRestaurantsRepository } from '@modules/restaurants/repositories/IRestaurantsRepository';
+import { differenceInMinutes } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
@@ -66,6 +67,74 @@ class CreateRestaurantProductUseCase {
       throw new AppError('Name is required');
     }
 
+    const datePromotion = [
+      promotion?.start_date,
+      promotion?.finish_time,
+      promotion?.start_date,
+      promotion?.finish_date,
+    ] as string[];
+
+    const datePromotionValues = datePromotion.filter(
+      datePromotionField => datePromotionField && datePromotionField !== '',
+    );
+
+    if (datePromotionValues.length >= 1) {
+      if (datePromotionValues.length < datePromotion.length) {
+        throw new AppError('Promotion must have all date and time fields');
+      }
+
+      if (
+        !/^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/.test(
+          promotion.start_date,
+        ) ||
+        !/^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/.test(
+          promotion.finish_date,
+        )
+      ) {
+        throw new AppError('Date format invalid');
+      }
+
+      if (
+        !/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(promotion.start_time) ||
+        !/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(promotion.finish_time)
+      ) {
+        throw new AppError('Hour format invalid');
+      }
+
+      if (!promotion.price_promotion) {
+        throw new AppError('Price is required to promotion');
+      }
+
+      const startTime = promotion.start_time.split(':');
+      const finishTime = promotion.finish_time.split(':');
+
+      const startDate = new Date(promotion.start_date);
+      const finishDate = new Date(promotion.finish_date);
+
+      const dateStartTime = new Date(
+        startDate.setHours(Number(startTime[0]), Number(startTime[1]), 0),
+      );
+
+      const dateFinishTime = new Date(
+        finishDate.setHours(Number(finishTime[0]), Number(finishTime[1]), 0),
+      );
+
+      if (dateStartTime > dateFinishTime) {
+        throw new AppError(
+          'Start date does not can be greater then finish date',
+        );
+      }
+
+      const minutesDifference = differenceInMinutes(
+        dateFinishTime,
+        dateStartTime,
+      );
+
+      if (minutesDifference < 15) {
+        throw new AppError('Times must have a minimum interval of 15 minutes');
+      }
+    }
+
     const restaurantFound = await this.restaurantsRepository.findOne({
       id: restaurantId,
     });
@@ -109,7 +178,12 @@ class CreateRestaurantProductUseCase {
 
     const newPromotion = {
       ...new Promotion(),
-      ...promotion,
+      description: promotion?.description || null,
+      price_promotion: promotion?.price_promotion || null,
+      start_date: promotion?.start_date || null,
+      finish_date: promotion?.finish_date || null,
+      start_time: promotion?.start_time || null,
+      finish_time: promotion?.finish_time || null,
       product_id: product.id,
     };
 
