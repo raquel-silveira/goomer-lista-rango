@@ -90,7 +90,7 @@ $ yarn test
 * Resultado dos testes, faltando aplicar testes de integração:
 
 <h1>
-  <img alt="Testes" title="#Testes" src="./docs/tests.jpg" />
+  <img alt="Testes" title="#Testes" src="./docs/tests.JPG" />
 </h1>
 
 - Acesse a cobertura de testes no navegador: goomer_lista_rango/coverage/lcov-report/index.html
