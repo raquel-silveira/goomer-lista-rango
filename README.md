@@ -77,8 +77,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
   <br>
 
-  ###
-🧪 Testes unitários
+  ### 🧪 Testes unitários
 
 ```bash
 # Rodando os testes
@@ -114,8 +113,7 @@ $ yarn test
 
 <br>
 
-   ###
-🙋 Utilidade
+   ### 🙋 Utilidade
 
 - [Rotas Insomnia](https://drive.google.com/file/d/1_PwmFF5rl3zdSRj5YUo9rRZ9WYGMwOlQ/view?usp=sharing)
 - [Documentação (disponível localmente)](http://localhost:3333/doc/)
