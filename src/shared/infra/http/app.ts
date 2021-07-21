@@ -4,8 +4,8 @@ import 'express-async-errors';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 
-import '../../container';
-import '../../../database/runMigrations';
+import '@config/dotenv';
+import '@shared/container';
 
 import { AppError } from '@shared/errors/AppError';
 

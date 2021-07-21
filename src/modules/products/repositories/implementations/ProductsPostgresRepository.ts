@@ -1,7 +1,7 @@
+import { createConnection } from '@database/connection';
 import { ICreateProductDTO } from '@modules/products/dtos/ICreateProductDTO';
 import { IUpdateProductDTO } from '@modules/products/dtos/IUpdateProductDTO';
 import { Product } from '@modules/products/infra/postgres/entities/Product';
-import { createConnection } from 'database/connection';
 
 import { IProductsRepository, IProductsResponse } from '../IProductsRepository';
 
@@ -35,10 +35,10 @@ class ProductsPostgresRepository implements IProductsRepository {
       jsonb_build_object(
         'description', PM.DESCRIPTION,
         'price_promotion', PM.PRICE_PROMOTION,
-        'start_date', PM.START_DATE,
-        'finish_date', PM.FINISH_DATE,
-        'start_time', PM.FINISH_TIME,
-        'finish_time', PM.FINISH_TIME
+        'start_date', TO_CHAR(PM.START_DATE, 'YYYY-MM-DD'),
+        'finish_date', TO_CHAR(PM.FINISH_DATE, 'YYYY-MM-DD'),
+        'start_time', TO_CHAR(PM.START_TIME, 'HH24:MI'),
+        'finish_time', TO_CHAR(PM.FINISH_TIME, 'HH24:MI')
       ) AS promotion
       FROM PRODUCTS P INNER JOIN PROMOTIONS PM ON P.ID = PM.PRODUCT_ID
       LEFT JOIN CATEGORIES C ON P.CATEGORY_ID = C.ID WHERE P.RESTAURANT_ID = $1`,
@@ -56,10 +56,10 @@ class ProductsPostgresRepository implements IProductsRepository {
       jsonb_build_object(
         'description', PM.DESCRIPTION,
         'price_promotion', PM.PRICE_PROMOTION,
-        'start_date', PM.START_DATE,
-        'finish_date', PM.FINISH_DATE,
-        'start_time', PM.FINISH_TIME,
-        'finish_time', PM.FINISH_TIME
+        'start_date', TO_CHAR(PM.START_DATE, 'YYYY-MM-DD'),
+        'finish_date', TO_CHAR(PM.FINISH_DATE, 'YYYY-MM-DD'),
+        'start_time', TO_CHAR(PM.START_TIME, 'HH24:MI'),
+        'finish_time', TO_CHAR(PM.FINISH_TIME, 'HH24:MI')
       ) AS promotion
       FROM PRODUCTS P INNER JOIN PROMOTIONS PM ON P.ID = PM.PRODUCT_ID
       LEFT JOIN CATEGORIES C ON P.CATEGORY_ID = C.ID WHERE P.ID = $1`,

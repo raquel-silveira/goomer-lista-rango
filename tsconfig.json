@@ -9,8 +9,7 @@
       "@modules/*": ["modules/*"],
       "@config/*": ["config/*"],
       "@shared/*": ["shared/*"],
-      "@errors/*": ["errors/*"],
-      "@utils/*": ["utils/*"]
+      "@database/*": ["database/*"]
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,
