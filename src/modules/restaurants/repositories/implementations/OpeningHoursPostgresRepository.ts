@@ -1,6 +1,6 @@
+import { createConnection } from '@database/connection';
 import { ICreateOpeningHoursDTO } from '@modules/restaurants/dtos/ICreateOpeningHoursDTO';
 import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
-import { createConnection } from 'database/connection';
 import format from 'pg-format';
 
 import { IOpeningHoursRepository } from '../IOpeningHoursRepository';
@@ -22,7 +22,7 @@ class OpeningHoursPostgresRepository implements IOpeningHoursRepository {
     const { rows } = await client.query(
       format(
         `INSERT INTO OPENING_HOURS(ID, WEEKDAY, START_TIME, FINISH_TIME, RESTAURANT_ID)
-        VALUES %L RETURNING WEEKDAY, START_TIME, FINISH_TIME`,
+        VALUES %L RETURNING WEEKDAY, TO_CHAR(START_TIME, 'HH24:MI') AS START_TIME, TO_CHAR(FINISH_TIME, 'HH24:MI') AS FINISH_TIME`,
         formattedOpeningHours,
       ),
     );
@@ -50,7 +50,8 @@ class OpeningHoursPostgresRepository implements IOpeningHoursRepository {
     const client = await createConnection();
 
     const { rows } = await client.query(
-      `SElECT WEEKDAY, START_TIME, FINISH_TIME FROM OPENING_HOURS WHERE RESTAURANT_ID = $1`,
+      `SElECT WEEKDAY, TO_CHAR(START_TIME, 'HH24:MI') AS START_TIME, TO_CHAR(FINISH_TIME, 'HH24:MI') AS FINISH_TIME
+      FROM OPENING_HOURS WHERE RESTAURANT_ID = $1`,
       [restaurantId],
     );
 

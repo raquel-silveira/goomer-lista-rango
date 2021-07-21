@@ -1,5 +1,5 @@
+import { createConnection } from '@database/connection';
 import { Category } from '@modules/products/infra/postgres/entities/Category';
-import { createConnection } from 'database/connection';
 
 import { ICategoriesRepository } from '../ICategoriesRepository';
 
