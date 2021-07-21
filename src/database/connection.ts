@@ -2,13 +2,11 @@ import { Pool } from 'pg';
 
 const createConnection = async () => {
   const client = new Pool({
-    host: 'database',
-    user: 'docker',
-    password: 'docker',
-    database: 'goomer_lista_rango',
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
   });
-
-  await client.connect();
 
   return client;
 };

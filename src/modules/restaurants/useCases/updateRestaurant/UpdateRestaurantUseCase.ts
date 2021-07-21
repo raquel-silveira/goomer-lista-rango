@@ -4,6 +4,7 @@ import {
   IRestaurantsRepository,
   IRestaurantsResponse,
 } from '@modules/restaurants/repositories/IRestaurantsRepository';
+import { differenceInMinutes } from 'date-fns';
 import { inject, injectable } from 'tsyringe';
 import { validate, version } from 'uuid';
 
@@ -32,7 +33,7 @@ interface IRequest {
 class UpdateRestaurantUseCase {
   constructor(
     @inject('RestaurantsRepository')
-    private restaurantRepository: IRestaurantsRepository,
+    private restaurantsRepository: IRestaurantsRepository,
 
     @inject('OpeningHoursRepository')
     private openingHoursRepository: IOpeningHoursRepository,
@@ -62,7 +63,7 @@ class UpdateRestaurantUseCase {
       throw new AppError('Name is required');
     }
 
-    if (state.length !== 2) {
+    if (state && state.length !== 2) {
       throw new AppError('State field must contain two characters');
     }
 
@@ -80,15 +81,72 @@ class UpdateRestaurantUseCase {
       if (!weekdays.includes(openingHour.weekday)) {
         throw new AppError('Weekday is incorrect');
       }
+
+      if (
+        (openingHour.start_time && !openingHour.finish_time) ||
+        (openingHour.finish_time && !openingHour.start_time)
+      ) {
+        throw new AppError('Hour field is missing');
+      }
+
+      if (openingHour.start_time && openingHour.finish_time) {
+        if (
+          !/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(openingHour.start_time) ||
+          !/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(openingHour.finish_time)
+        ) {
+          throw new AppError('Hour format invalid');
+        }
+
+        const startTime = openingHour.start_time.split(':');
+        const finishTime = openingHour.finish_time.split(':');
+
+        const fullDate = new Date();
+
+        const year = fullDate.getFullYear();
+        const month = fullDate.getMonth();
+        const day = fullDate.getDate();
+
+        const dateStartTime = new Date(
+          year,
+          month,
+          day,
+          Number(startTime[0]),
+          Number(startTime[1]),
+        );
+        const dateFinishTime = new Date(
+          year,
+          month,
+          day,
+          Number(finishTime[0]),
+          Number(finishTime[1]),
+        );
+
+        if (dateStartTime > dateFinishTime) {
+          throw new AppError(
+            'Start time does not can be greater then finish time',
+          );
+        }
+
+        const minutesDifference = differenceInMinutes(
+          dateFinishTime,
+          dateStartTime,
+        );
+
+        if (minutesDifference < 15) {
+          throw new AppError(
+            'Times must have a minimum interval of 15 minutes',
+          );
+        }
+      }
     });
 
-    const restaurant = await this.restaurantRepository.findOne({ id });
+    const restaurant = await this.restaurantsRepository.findOne({ id });
 
     if (!restaurant) {
       throw new AppError('Restaurant not found');
     }
 
-    const updatedRestaurant = await this.restaurantRepository.updateById({
+    const updatedRestaurant = await this.restaurantsRepository.updateById({
       id,
       name,
       address,
@@ -120,8 +178,8 @@ class UpdateRestaurantUseCase {
       return {
         ...new OpeningHours(),
         weekday,
-        start_time,
-        finish_time,
+        start_time: start_time || null,
+        finish_time: finish_time || null,
         restaurant_id: id,
       };
     });

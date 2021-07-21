@@ -1,8 +1,8 @@
+import { createConnection } from '@database/connection';
 import { ICreateRestaurantDTO } from '@modules/restaurants/dtos/ICreateRestaurantDTO';
 import { IUpdateRestaurantDTO } from '@modules/restaurants/dtos/IUpdateRestaurantDTO';
 import { OpeningHours } from '@modules/restaurants/infra/postgres/entities/OpeningHours';
 import { Restaurant } from '@modules/restaurants/infra/postgres/entities/Restaurant';
-import { createConnection } from 'database/connection';
 
 import { IRestaurantsRepository } from '../IRestaurantsRepository';
 
@@ -62,8 +62,8 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
         DISTINCT
         jsonb_build_object(
           'weekday', OH.WEEKDAY,
-          'start_time', OH.START_TIME,
-          'finish_time', OH.FINISH_TIME
+          'start_time', TO_CHAR(OH.START_TIME, 'HH24:MI'),
+          'finish_time', TO_CHAR(OH.FINISH_TIME, 'HH24:MI')
         )
       ) as opening_hours
       FROM RESTAURANTS R INNER JOIN OPENING_HOURS OH ON R.ID = OH.RESTAURANT_ID WHERE R.ID = $1 GROUP BY R.ID`,
@@ -81,8 +81,8 @@ class RestaurantsPostgresRepository implements IRestaurantsRepository {
         DISTINCT
         jsonb_build_object(
           'weekday', OH.WEEKDAY,
-          'start_time', OH.START_TIME,
-          'finish_time', OH.FINISH_TIME
+          'start_time', TO_CHAR(OH.START_TIME, 'HH24:MI'),
+          'finish_time', TO_CHAR(OH.FINISH_TIME, 'HH24:MI')
         )
       ) as opening_hours
       FROM RESTAURANTS R INNER JOIN OPENING_HOURS OH ON R.ID = OH.RESTAURANT_ID GROUP BY R.ID`,

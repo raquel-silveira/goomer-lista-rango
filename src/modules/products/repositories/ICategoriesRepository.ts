@@ -12,6 +12,8 @@ interface ICategoriesRepository {
   }): Promise<Category>;
 
   findByName(name: string): Promise<Category>;
+
+  findById(id: string): Promise<Category>;
 }
 
 export { ICategoriesRepository };

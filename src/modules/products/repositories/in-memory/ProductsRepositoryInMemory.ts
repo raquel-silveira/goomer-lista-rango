@@ -1,12 +1,18 @@
 import { ICreateProductDTO } from '@modules/products/dtos/ICreateProductDTO';
 import { IUpdateProductDTO } from '@modules/products/dtos/IUpdateProductDTO';
+import { Category } from '@modules/products/infra/postgres/entities/Category';
 import { Product } from '@modules/products/infra/postgres/entities/Product';
+import { Promotion } from '@modules/products/infra/postgres/entities/Promotion';
 
 import { IProductsRepository, IProductsResponse } from '../IProductsRepository';
 
 class ProductsRepositoryInMemory implements IProductsRepository {
   products: Product[] = [];
 
+  constructor(
+    private promotions: Promotion[] = [],
+    private categories: Category[] = [],
+  ) {}
   async create({
     id,
     name,
@@ -21,25 +27,99 @@ class ProductsRepositoryInMemory implements IProductsRepository {
       name,
       price,
       category_id,
-      restaurantId,
+      restaurant_id: restaurantId,
     });
 
     this.products.push(product);
 
     return product;
   }
-  async findAll({
+
+  async findOne({ id }: { id: string }): Promise<IProductsResponse> {
+    const productFound = this.products.find(product => product.id === id);
+
+    if (!productFound) {
+      return null;
+    }
+
+    const productPromotion = {
+      id: productFound.id,
+      name: productFound.name,
+      price: productFound.price,
+      photo: productFound.photo,
+      category:
+        this.categories.find(
+          category => category.id === productFound.category_id,
+        )?.name || null,
+      promotion:
+        this.promotions.find(
+          promotion => promotion.product_id === productFound.id,
+        ) || null,
+    };
+
+    return productPromotion;
+  }
+
+  async findByRestaurantId({
     restaurantId,
   }: {
     restaurantId: string;
   }): Promise<IProductsResponse[]> {
-    throw new Error('Method not implemented.');
+    const productsFound = this.products.filter(
+      product => product.restaurant_id === restaurantId,
+    );
+
+    if (!productsFound) {
+      return null;
+    }
+
+    const productPromotion = productsFound.map(product => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      photo: product.photo,
+      category:
+        this.categories.find(category => category.id === product.category_id)
+          ?.name || null,
+      promotion:
+        this.promotions.find(
+          promotion => promotion.product_id === product.id,
+        ) || null,
+    }));
+
+    return productPromotion;
   }
-  async updateById({ id, name, price }: IUpdateProductDTO): Promise<Product> {
-    throw new Error('Method not implemented.');
+  async updateById({
+    id,
+    name,
+    price,
+    category_id,
+  }: IUpdateProductDTO): Promise<Product> {
+    const productFound = this.products.find(product => product.id === id);
+
+    if (!productFound) {
+      return null;
+    }
+
+    const updatedFields = {
+      ...(name ? { name } : {}),
+      ...(price ? { price } : {}),
+      ...(category_id ? { category_id } : {}),
+    };
+
+    const productIndex = this.products.findIndex(product => product.id === id);
+
+    this.products[productIndex] = {
+      ...this.products[productIndex],
+      ...updatedFields,
+    };
+
+    const updatedProduct = { ...this.products[productIndex] };
+
+    return updatedProduct;
   }
   async delete({ id }: { id: string }): Promise<void> {
-    throw new Error('Method not implemented.');
+    this.products = this.products.filter(product => product.id !== id);
   }
   async updatePhotoById({
     id,
@@ -48,7 +128,19 @@ class ProductsRepositoryInMemory implements IProductsRepository {
     id: string;
     photoFilename: string;
   }): Promise<Product> {
-    throw new Error('Method not implemented.');
+    const productFound = this.products.find(product => product.id === id);
+
+    if (!productFound) {
+      return null;
+    }
+
+    const productIndex = this.products.findIndex(product => product.id === id);
+
+    this.products[productIndex].photo = photoFilename;
+
+    const updatedPhotoProduct = { ...this.products[productIndex] };
+
+    return updatedPhotoProduct;
   }
 }
 
